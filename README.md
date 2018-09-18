@@ -24,24 +24,24 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
-•	win_dns_events
-•	win_dns_response_events 
-•	win_epp_table
-•	win_file_events   
-•	win_file_timestomp_events
-•	win_http_events 
-•	win_image_load_events 
-•	win_msr
-•	win_obfuscated_ps
-•	win_pefile_events 
-•	win_process_events 
-•	win_process_handles
-•	win_process_open_events 
-•	win_registry_events 
-•	win_remote_thread_events 
-•	win_removable_media_events 
-•	win_socket_events 
-•	win_yara_events
+- win_dns_events
+- win_dns_response_events 
+- win_epp_table
+- win_file_events   
+- win_file_timestomp_events
+- win_http_events 
+- win_image_load_events 
+- win_msr
+- win_obfuscated_ps
+- win_pefile_events 
+- win_process_events 
+- win_process_handles
+- win_process_open_events 
+- win_registry_events 
+- win_remote_thread_events 
+- win_removable_media_events 
+- win_socket_events 
+- win_yara_events
 
 The detailed schema for these tables is available 
 
@@ -52,52 +52,59 @@ By default, PolyLogyx client is designed to capture the system events in real ti
 # 2.1 Types of Filters
 
 Using filters, you can configure the PolyLogyx client to capture only data relevant to you. You can choose to include relevant data and exclude non-meaningful data. In effect you can define these type of filters:
-•	Include filters to receive information about events matching the specified filtering criteria.
-•	Exclude filters to ignore information about events matching the specified filtering criteria.
+- Include filters to receive information about events matching the specified filtering criteria.
+- Exclude filters to ignore information about events matching the specified filtering criteria.
+
 Note: Exclude filters take precedence over include filters when processing the defined filters. So, if an include and exclude filter match the same event, information is not captured. In the absence of any filters, all events are captured.
 These filters operate on the tables and are defined in the osquery.conf file. Use the json syntax to define filters. Here is the syntax used to define a filter.
-“table name”: {
-“column name” : {
-	“filter type” : {
-		“values”: [
-		“value 1”
-		“value 2”
+
+	“table name”: {
+		“column name” : {
+			“filter type” : {
+				“values”: [
+					“value 1”,
+					“value 2”
+					]
+
 
 In the syntax:
-•	table name - Represents the name of the table for which to define filters. You must include the table names in quotes (“”). You can apply filters only on a selected set of tables . For more information, see Supported Tables.
-•	column name - Indicates the name of the column within the table on which to filter information. You must include the column names in quotes (“”). You can define filters on selected columns in a set of tables. For more information, see Supported Tables.
-•	filter type - Specifies the filter type. Possible values are include and exclude. You must include the values in quotes (“”).
-•	value 1 and value 2 - List the values to match for the specified filter. Each entry represents a value that you want to store or ignore data for (based on the filter type). You must include the values in quotes (“”). Specified values are case insensitive. You can also use regular expressions in the values.
-o	* – Represents one or more characters
-o	? – Represents a single character
+- table name - Represents the name of the table for which to define filters. You must include the table names in quotes (“”). You can apply filters only on a selected set of tables . For more information, see Supported Tables.
+- column name - Indicates the name of the column within the table on which to filter information. You must include the column names in quotes (“”). You can define filters on selected columns in a set of tables. For more information, see Supported Tables.
+- filter type - Specifies the filter type. Possible values are include and exclude. You must include the values in quotes (“”).
+- value 1 and value 2 - List the values to match for the specified filter. Each entry represents a value that you want to store or ignore data for (based on the filter type). You must include the values in quotes (“”). Specified values are case insensitive. You can also use regular expressions in the values.
+- * – Represents one or more characters
+- ? – Represents a single character
+
 Here is an example of exclude filters.
-"win_process_events": {	
-	"cmdline": {
-		"exclude" : {
-			"values": 
+
+	"win_process_events": {	
+		"cmdline": {
+			"exclude" : {
+				"values": 
 				[
 				"C:\\Windows\\system32\\DllHost.exe /Processid*",
 				"C:\\Windows\\system32\\SearchIndexer.exe /Embedding",
 				"C:\\windows\\system32\\wermgr.exe -queuereporting",
 				]
-     }
-    }
-}
+     			}
+    		}
+	}
+	
 Here is an example of include filters.
-"win_registry_events": {
-			"target_name": {
-				"include": {
-					"values": 
-					[
-					"*CurrentVersion\\Run*",
-					"*Policies\\Explorer\\Run*",
-					"*Group Policy\\Scripts*",
-					"*Windows\\System\\Scripts*",
-					]
-					   }
-					 }
-			}
 
+	"win_registry_events": {
+		"target_name": {
+			"include": {
+				"values": 
+				[
+				"*CurrentVersion\\Run*",
+				"*Policies\\Explorer\\Run*",
+				"*Group Policy\\Scripts*",
+				"*Windows\\System\\Scripts*",
+				]
+			   }
+		 }
+	}
 
 
 # 2.2 Event filtering support
