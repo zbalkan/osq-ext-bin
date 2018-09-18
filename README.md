@@ -24,7 +24,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
-•	win_dns_events 
+•	win_dns_events
 •	win_dns_response_events 
 •	win_epp_table
 •	win_file_events   
