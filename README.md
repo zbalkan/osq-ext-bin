@@ -1,8 +1,8 @@
-#1. PolyLogyx osquery Extension for Windows
+## 1. PolyLogyx osquery Extension for Windows
 
 PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core osquery on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous.
 
-#1.1 What it does:
+# 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
 
 1) File Integrity Monitoring (FIM)
@@ -45,11 +45,11 @@ This additional state of the Windows endpoint is exported by means of following 
 
 The detailed schema for these tables is available 
 
-#2 Applying Filters
+## 2 Applying Filters
 
 By default, PolyLogyx client is designed to capture the system events in real time over a wide variety of system activities and make that telemetry available via the flexible SQL syntax of osquery. Given the most of the system activity may be benign, and can cause additional burden of skimming thru a larger volume of data while searching for incidents of interest, we provide a way of filtering the events on most tables.
 
-#2.1 Types of Filters
+# 2.1 Types of Filters
 
 Using filters, you can configure the PolyLogyx client to capture only data relevant to you. You can choose to include relevant data and exclude non-meaningful data. In effect you can define these type of filters:
 •	Include filters to receive information about events matching the specified filtering criteria.
@@ -100,12 +100,12 @@ Here is an example of include filters.
 
 
 
-#2.2 Event filtering support
+# 2.2 Event filtering support
 
-#2.3 Credit for filters
+# 2.3 Credit for filters
 
 sysmon
 SwiftOnSecurity
 
 
-#3 FAQ
+## 3 FAQ
