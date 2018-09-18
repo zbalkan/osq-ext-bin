@@ -68,12 +68,13 @@ These filters operate on the tables and are defined in the osquery.conf file. Us
 
 
 In the syntax:
-- table name - Represents the name of the table for which to define filters. You must include the table names in quotes (“”). You can apply filters only on a selected set of tables . For more information, see Supported Tables.
-- column name - Indicates the name of the column within the table on which to filter information. You must include the column names in quotes (“”). You can define filters on selected columns in a set of tables. For more information, see Supported Tables.
-- filter type - Specifies the filter type. Possible values are include and exclude. You must include the values in quotes (“”).
-- value 1 and value 2 - List the values to match for the specified filter. Each entry represents a value that you want to store or ignore data for (based on the filter type). You must include the values in quotes (“”). Specified values are case insensitive. You can also use regular expressions in the values.
-- * – Represents one or more characters
-- ? – Represents a single character
+- **table name** - Represents the name of the table for which to define filters. You must include the table names in quotes (“”). You can apply filters only on a selected set of tables . For more information, see Supported Tables.
+- **column name** - Indicates the name of the column within the table on which to filter information. You must include the column names in quotes (“”). You can define filters on selected columns in a set of tables. For more information, see Supported Tables.
+- **filter type** - Specifies the filter type. Possible values are include and exclude. You must include the values in quotes (“”).
+- **value 1** and **value 2** - List the values to match for the specified filter. Each entry represents a value that you want to store or ignore data for (based on the filter type). You must include the values in quotes (“”). Specified values are case insensitive. You can also use following wild cards in the values.
+ 
+ - \*  Represents one or more characters
+ - ?  Represents a single character
 
 Here is an example of exclude filters.
 
