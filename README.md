@@ -155,7 +155,7 @@ A) No. The extension executable is self sufficient. The kernel component is auto
 
 Q) Is there a cleanup utility in such a case?
 
-A) Yes. You can use _cleanup.bat._ It would need to be launched from an admin console
+A) Yes. You can use _\_cleanup.bat._ It would need to be launched from an admin console
 
 Q) I want to report an issue.
 
