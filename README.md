@@ -1,6 +1,6 @@
 ## 1. PolyLogyx osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core osquery on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous.
+PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous.
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -125,7 +125,7 @@ Event filters are supported on following tables and columns:
 
 # 2.3 Credit for filters
 
-The event filters are inspired from the filters on the popular IR tool sysmon. The osquery.conf file provided with the extension are derived from the high fidelity sysmon filters built by SwiftOnSecurity and its fork by Ionstorm. 
+The event filters are inspired from the filters on the popular IR tool [sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon). The filtering conditions in osquery.conf file provided with the extension are derived from the high fidelity sysmon filters built by [SwiftOnSecurity](https://github.com/SwiftOnSecurity/sysmon-config) and its fork by [ion-storm](https://github.com/ion-storm/sysmon-config). Many other configurations can be created. 
 
 ## 3 FAQ
 
@@ -157,7 +157,10 @@ Q) Is there a cleanup utility in such a case?
 
 A) Yes. You can use _\_cleanup.bat._ It would need to be launched from an admin console
 
+Q) What if something breaks?
+
+A) You get to keep both the pieces. Isn't that great?
+
 Q) I want to report an issue.
 
 A) You can log it here or mail to open@polylogyx.com
-
