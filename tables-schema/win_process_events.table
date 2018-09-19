@@ -1,0 +1,18 @@
+TableColumns columns() const override
+{
+
+    return{
+            std::make_tuple("action", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("cmdline", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("parent", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("parent_path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("owner_uid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("utc_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+        };
+}
+
+

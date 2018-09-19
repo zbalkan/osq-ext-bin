@@ -1,0 +1,10 @@
+TableColumns columns() const override
+{
+   return{
+            std::make_tuple("script_id", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("time_created", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("obfuscated_state", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("obfuscated_score", TEXT_TYPE, ColumnOptions::DEFAULT),
+            };
+        };
+}

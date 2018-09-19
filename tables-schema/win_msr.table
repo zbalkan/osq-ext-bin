@@ -1,0 +1,16 @@
+TableColumns columns() const
+{
+      return{
+          std::make_tuple("turbo_disabled", BIGINT, "MSR_IA32_MISC_ENABLE"),
+          std::make_tuple("turbo_ratio_limt", BIGINT, "MSR_TURBO_RATIO_LIMIT"),
+          std::make_tuple("platform_info", BIGINT, "MSR_PLATFORM_INFO"),
+          std::make_tuple("perf_status", BIGINT, "MSR_IA32_PERF_STATUS"),
+          std::make_tuple("perf_ctl", BIGINT, "MSR_IA32_PERF_CTL"),
+          std::make_tuple("feature_control", BIGINT, "MSR_IA32_FEATURE_CONTROL"),
+          std::make_tuple("rapl_power_limit", BIGINT, "MSR_PKG_POWER_LIMIT"),
+          std::make_tuple("rapl_energy_status", BIGINT, "MSR_PKG_ENERGY_STATUS"),
+          std::make_tuple("rapl_power_units", BIGINT, "MSR_RAPL_POWER_UNIT"),
+      };
+}
+
+

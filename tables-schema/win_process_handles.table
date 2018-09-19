@@ -1,0 +1,10 @@
+TableColumns columns() const
+{
+        return{
+            std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("handle_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("object_name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("access_mask", BIGINT_TYPE, ColumnOptions::DEFAULT),
+        };
+}
+

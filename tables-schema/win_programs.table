@@ -1,0 +1,14 @@
+TableColumns columns() const
+{
+      return{
+            std::make_tuple("name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("version", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("install_location", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("install_source", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("language", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("publisher", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("uninstall_string", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("install_date", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("identifying_number", TEXT_TYPE, ColumnOptions::DEFAULT),
+       };
+}

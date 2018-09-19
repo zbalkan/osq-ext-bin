@@ -1,0 +1,11 @@
+TableColumns columns() const
+{
+    return{
+            std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("removable_media_event_id", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("uid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("utc_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+       };
+}

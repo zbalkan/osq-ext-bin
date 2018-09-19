@@ -1,0 +1,17 @@
+TableColumns columns() const
+{
+      return{
+            std::make_tuple("name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("service_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("display_name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("status", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("pid", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("start_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("win32_exit_code", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("service_exit_code", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("module_path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("description", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("user_account", TEXT_TYPE, ColumnOptions::DEFAULT),
+      };
+}

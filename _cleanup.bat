@@ -1,0 +1,39 @@
+@echo off
+
+NET SESSION >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    ECHO Administrator PRIVILEGES Detected! 
+) ELSE (
+   echo ######## ########  ########   #######  ########  
+   echo ##       ##     ## ##     ## ##     ## ##     ## 
+   echo ##       ##     ## ##     ## ##     ## ##     ## 
+   echo ######   ########  ########  ##     ## ########  
+   echo ##       ##   ##   ##   ##   ##     ## ##   ##   
+   echo ##       ##    ##  ##    ##  ##     ## ##    ##  
+   echo ######## ##     ## ##     ##  #######  ##     ## 
+   echo.
+   echo.
+   echo ####### ERROR: ADMINISTRATOR PRIVILEGES REQUIRED #########
+   echo This script must be run as administrator to work properly!  
+   echo ##########################################################
+   echo.
+   PAUSE
+   EXIT /B 1
+)
+
+echo "Cleaning the db files.."
+REM Clean up the extension db
+rmdir /S /Q c:\ProgramData\plgx_win_extension >nul 2>&1
+
+REM Clean up the drivers
+fltmc unload vast >nul 2>&1
+sc delete vast >nul 2>&1
+del /F /Q /S C:\Windows\System32\drivers\vast.sys >nul 2>&1
+sc stop vastnw >nul 2>&1
+sc delete vastnw >nul 2>&1
+del /F /Q /S C:\Windows\System32\drivers\vastnw.sys >nul 2>&1
+del /F /Q /S C:\ProgramData\osquery\vastnw.sys >nul 2>&1
+
+REM clean up the extension binary
+del /F /Q /S C:\ProgramData\osquery\plgx_win_extension.ext.exe >nul 2>&1
+echo "Clean up done."

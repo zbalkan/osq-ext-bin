@@ -1,0 +1,11 @@
+TableColumns columns() const
+{
+      return{
+          std::make_tuple("path",   TEXT_TYPE, ColumnOptions::REQUIRED),
+          std::make_tuple("md5",    TEXT_TYPE, ColumnOptions::DEFAULT),
+          std::make_tuple("sha1",   TEXT_TYPE, ColumnOptions::DEFAULT),
+          std::make_tuple("sha256", TEXT_TYPE, ColumnOptions::DEFAULT),
+      };
+}
+
+

@@ -1,0 +1,10 @@
+TableColumns columns() const
+{
+       return{
+            std::make_tuple("product_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("product_name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("product_state", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("product_signatures", TEXT_TYPE, ColumnOptions::DEFAULT),
+       };
+}
+

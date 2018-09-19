@@ -1,0 +1,14 @@
+TableColumns columns() const
+{
+      return{
+            std::make_tuple("name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("args", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("source", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("status", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("username", TEXT_TYPE, ColumnOptions::DEFAULT),
+      };
+}
+
+

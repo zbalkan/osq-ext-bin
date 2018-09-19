@@ -119,6 +119,7 @@ Event filters are supported on following tables and columns:
 |win_socket_events|process_name, remote_port, remote_address|
 |win_file_events|target_path, process_name|
 |win_remote_thread_events|src_path, target_path|
+|win_process_open_events|src_path, target_path|
 |win_dns_events|domain_name|
 |win_dns_response_events|domain_name|
 
@@ -164,3 +165,7 @@ A) You get to keep both the pieces. Isn't that great?
 Q) I want to report an issue.
 
 A) You can log it here or mail to open@polylogyx.com
+
+Q) Any known issues?
+
+A) There is a small race between application of filters and the event collection, so for a short windows events that are supposed to be fitered get captured.

@@ -1,0 +1,17 @@
+TableColumns columns() const
+{
+  return{
+      std::make_tuple("event_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("url", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("process_name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("remote_address", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("remote_port", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("utc_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+    };
+}
+
+
+

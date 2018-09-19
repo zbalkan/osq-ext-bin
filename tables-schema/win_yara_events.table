@@ -1,0 +1,11 @@
+TableColumns columns() const override
+{
+   return{
+            std::make_tuple("target_path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("category", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("action", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("matches", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("count", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
+        };
+}
