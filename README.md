@@ -110,10 +110,46 @@ Here is an example of include filters.
 
 # 2.2 Event filtering support
 
+Event filters are supported on following tables and columns:
+
+| Table Name | Column Names |
+|------------|--------------|
+|win_process_events|cmdline, path, parent_path|
+|win_registry_events|target_name|
+|win_socket_events|process_name, remote_port, remote_address|
+|win_file_events|target_path, process_name|
+|win_remote_thread_events|src_path, target_path|
+|win_dns_events|domain_name|
+|win_dns_response_events|domain_name|
+
+
 # 2.3 Credit for filters
 
-sysmon
-SwiftOnSecurity
-
+The event filters are inspired from the filters on the popular IR tool sysmon. The osquery.conf file provided with the extension are derived from the high fidelity sysmon filters built by SwiftOnSecurity and its fork by Ionstorm. 
 
 ## 3 FAQ
+
+Q) What is extension version?
+A) It is 1.0.22.2. It is digitally signed by PolyLogyx
+
+Q) What osquery version to use?
+A) It has been built and tested with 3.2.6.
+
+Q) I have installed osquery using the MSI from osquery website. Now what?
+A) Stop the osquery service, replace the osquery.flags and osquery.conf with the ones provided here. Feel free to edit them to bring the configurations from previous files. Restart osqueryd/osqueryi
+
+Q) Extension is loaded by osqueryd. Can I also see the extension tables by running osqueryi?
+A) Unfortunately no. There are multiple reasons for it, one of them being the communication pipe between osquery core and extension is taken by osqueryd, so osqueryi won't load the extension. 
+
+Q) Does it depend on any kernel component?
+A) It does.
+
+Q) Do we need to install the kernel component seperately?
+A) No. The extension executable is self sufficient. The kernel component is automatically installed/uninstalled with the load and unlaod of extension. There are however situations when osquery doesn't install the extension very cleanly and the drivers may reamin loaded. 
+
+Q) Is there a cleanup utility in such a case?
+A) Yes. You can use _cleanup.bat._ It would need to be launched from an admin console
+
+Q) I want to report an issue.
+A) You can log it here or mail to open@polylogyx.com
+
