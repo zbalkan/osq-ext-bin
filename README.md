@@ -158,13 +158,12 @@ Q) Is there a cleanup utility in such a case?
 
 A) Yes. You can use _\_cleanup.bat._ It would need to be launched from an admin console
 
-Q) What if something breaks?
-
+Q) What if something )
 A) You get to keep both the pieces. Isn't that great?
 
 Q) I want to report an issue.
 
-A) You can log it here or mail to open@polylogyx.com
+A) You can log it here, mail to open@polylogyx.com or find us on [osquery slack](https://osquery.slack.com/) at channel # polylogyx-extension
 
 Q) Any known issues?
 
