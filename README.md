@@ -45,7 +45,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_socket_events 
 - win_yara_events
 
-The detailed schema for these tables is available 
+The detailed schema for these [tables](https://github.com/polylogyx/osq-ext-bin/tree/master/tables-schema). is available 
 
 ## 2 Applying Filters
 
@@ -130,7 +130,11 @@ Event filters are supported on following tables and columns:
 
 The event filters are inspired from the filters on the popular IR tool [sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon). The filtering conditions in osquery.conf file provided with the extension are derived from the high fidelity sysmon filters built by [SwiftOnSecurity](https://github.com/SwiftOnSecurity/sysmon-config) and its fork by [ion-storm](https://github.com/ion-storm/sysmon-config). Many other configurations can be created. 
 
-## 3 FAQ
+## 3 Extension SDK
+
+With the release 1.0.23.3, we have introduced an experimental SDK that allows the extension to be used as a bridge between an endpoint application and osquery. For more details, check [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
+
+## 4 FAQ
 
 Q) What is extension version?
 
