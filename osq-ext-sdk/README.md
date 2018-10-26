@@ -20,23 +20,23 @@ The repository provides a small test program to demonostrate how the queries can
 
 Following shows the sample run and the output for the query against the 'time' table.
 
-c:\>plgx-sdk-test.exe "select * from time;"
-datetime: 2018-09-25T17:40:45Z
-day: 25
-hour: 17
-iso_8601: 2018-09-25T17:40:45Z
-local_time: 1537897245
-local_timezone: UTC
-minutes: 40
-month: 9
-seconds: 45
-timestamp: Tue Sep 25 17:40:45 2018 UTC
-timezone: UTC
-unix_time: 1537897245
-weekday: Tuesday
-year: 2018
-All done
-c:\>
+	c:\>plgx-sdk-test.exe "select * from time;"
+		datetime: 2018-09-25T17:40:45Z
+		day: 25
+		hour: 17
+		iso_8601: 2018-09-25T17:40:45Z
+		local_time: 1537897245
+		local_timezone: UTC
+		minutes: 40
+		month: 9
+		seconds: 45
+		timestamp: Tue Sep 25 17:40:45 2018 UTC
+		timezone: UTC
+		unix_time: 1537897245
+		weekday: Tuesday
+		year: 2018
+		All done
+	c:\>
 
 ## 3 Extension SDK DLL
 
