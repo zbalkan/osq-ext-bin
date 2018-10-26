@@ -3,7 +3,9 @@ TableColumns columns() const override
   return{
       std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
           std::make_tuple("src_pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+          std::make_tuple("src_process_guid", TEXT_TYPE, ColumnOptions::DEFAULT),
           std::make_tuple("target_pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+          std::make_tuple("target_process_guid", TEXT_TYPE, ColumnOptions::DEFAULT),
           std::make_tuple("src_path", TEXT_TYPE, ColumnOptions::DEFAULT),
           std::make_tuple("target_path", TEXT_TYPE, ColumnOptions::DEFAULT),
           std::make_tuple("function_name", TEXT_TYPE, ColumnOptions::DEFAULT),

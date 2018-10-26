@@ -21,6 +21,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 14) Ability to track Registry Events in real time
 15) Query the state of the endpoint security solution (e.g. AV)
 16) Sysmon style events for RemoteThread and OpenProcess
+17) Map of process and loaded DLLs (Images)
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
@@ -31,6 +32,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_file_timestomp_events
 - win_http_events 
 - win_image_load_events 
+- win_image_load_process_map
 - win_msr
 - win_obfuscated_ps
 - win_pefile_events 
@@ -118,11 +120,11 @@ Event filters are supported on following tables and columns:
 |win_registry_events|target_name|
 |win_socket_events|process_name, remote_port, remote_address|
 |win_file_events|target_path, process_name|
-|win_remote_thread_events|src_path, target_path|
+|win_remote_thread_events|module_name, function_name, src_path, target_path|
 |win_process_open_events|src_path, target_path|
 |win_dns_events|domain_name|
 |win_dns_response_events|domain_name|
-
+|win_image_load_process_map|image_path|
 
 # 2.3 Credit for filters
 
@@ -132,11 +134,11 @@ The event filters are inspired from the filters on the popular IR tool [sysmon](
 
 Q) What is extension version?
 
-A) It is 1.0.22.2. It is digitally signed by PolyLogyx
+A) It is 1.0.23.3. It is digitally signed by PolyLogyx
 
 Q) What osquery version to use?
 
-A) It has been built and tested with 3.2.6.
+A) It has been built and tested with 3.2.6. It also works with 3.3.0.
 
 Q) I have installed osquery using the MSI from osquery website. Now what?
 
@@ -154,12 +156,25 @@ Q) Do we need to install the kernel component seperately?
 
 A) No. The extension executable is self sufficient. The kernel component is automatically installed/uninstalled with the load and unlaod of extension. There are however situations when osquery doesn't install the extension very cleanly and the drivers may reamin loaded. 
 
+Q) osquery has a lot of tables too. What advantage do the extensions' tables provide?
+
+A) osquery tables provide a point-in-time state of the system. The extension tables are evented tables and therefore remove any blind spot between 2 queries. Both the form factors have their own distinct advantages.
+
 Q) Is there a cleanup utility in such a case?
 
 A) Yes. You can use _\_cleanup.bat._ It would need to be launched from an admin console
 
-Q) What if something )
+Q) How to upgrade from the last released extension version (1.0.22.2)?
+
+A) Unfortunately a non-disruptive upgrade is not supported at this point. The clean way of upgrading would be: _Stop the osquery service. Run the cleanup utility. Replace the file plgx_win_extension.ext.exe. Re-start the service._ Any previously stored data tables will be lost.
+
+Q) What if something breaks?
+
 A) You get to keep both the pieces. Isn't that great?
+
+Q) Do you also have fleet manager that provides out-of-box support for these tables and deployment of extension?
+
+A) Yes, we do. Feel welcome to contact us at info@polylogyx.com  
 
 Q) I want to report an issue.
 

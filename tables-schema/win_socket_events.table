@@ -8,6 +8,7 @@ TableColumns columns() const
             std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("utc_time", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("process_guid", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("process_name", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("family", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("protocol", INTEGER_TYPE, ColumnOptions::DEFAULT),

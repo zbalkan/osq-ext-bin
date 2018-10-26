@@ -4,6 +4,8 @@ TableColumns columns() const
      std::make_tuple("event_type", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
          std::make_tuple("eid", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
          std::make_tuple("domain_name", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+         std::make_tuple("request_type", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
+         std::make_tuple("request_class", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
          std::make_tuple("pid", osquery::BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
          std::make_tuple("remote_address", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
          std::make_tuple("remote_port", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
@@ -11,4 +13,5 @@ TableColumns columns() const
          std::make_tuple("utc_time", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
         };  
 }
+
 

@@ -5,6 +5,7 @@ TableColumns columns() const
             std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("url", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("process_guid", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("process_name", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("remote_address", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("remote_port", INTEGER_TYPE, ColumnOptions::DEFAULT),
