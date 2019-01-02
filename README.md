@@ -253,74 +253,78 @@ osquery. For more details, check
 
 1.  What is extension version?
 
-2.  It is 1.0.24.4. It is digitally signed by PolyLogyx
+It is 1.0.24.4. It is digitally signed by PolyLogyx.
 
-3.  What osquery version to use?
+2.  What osquery version to use?
 
-4.  It has been built and tested with 3.2.6. It also works with 3.3.0.
+It has been built and tested with 3.2.6. It also works with 3.3.0.
 
-5.  I have installed osquery using the MSI from osquery website. Now what?
+3.  I have installed osquery using the MSI from osquery website. Now what?
 
-6.  Stop the osquery service, replace the osquery.flags and osquery.conf with
-    the ones provided here. Feel free to edit them to bring the configurations
-    from previous files. Restart osqueryd/osqueryi
+Stop the osquery service, replace the osquery.flags and osquery.conf with
+the ones provided here. Feel free to edit them to bring the configurations
+from previous files. Restart osqueryd/osqueryi
 
-7.  Extension is loaded by osqueryd. Can I also see the extension tables by
+4.  Extension is loaded by osqueryd. Can I also see the extension tables by
     running osqueryi?
 
-8.  Unfortunately no. There are multiple reasons for it, one of them being the
-    communication pipe between osquery core and extension is taken by osqueryd,
-    so osqueryi won't load the extension.
+Unfortunately no. There are multiple reasons for it, one of them being the
+communication pipe between osquery core and extension is taken by osqueryd,
+so osqueryi won't load the extension.
 
-9.  Does it depend on any kernel component?
+5.  Does it depend on any kernel component?
 
-10. It does.
+It does.
 
-11. Do we need to install the kernel component seperately?
+6. Do we need to install the kernel component seperately?
 
-12. No. The extension executable is self sufficient. The kernel component is
-    automatically installed/uninstalled with the load and unlaod of extension.
-    There are however situations when osquery doesn't install the extension very
-    cleanly and the drivers may reamin loaded.
+No. The extension executable is self sufficient. The kernel component is
+automatically installed/uninstalled with the load and unlaod of extension.
+There are however situations when osquery doesn't un-install the extension very
+cleanly and the drivers may reamin loaded.
 
-13. osquery has a lot of tables too. What advantage do the extensions' tables
+7. Is there a cleanup utility in such a case?
+
+Yes. You can use *\_cleanup.bat.* It would need to be launched from an admin
+console
+
+8. osquery has a lot of tables too. What advantage do the extensions' tables
     provide?
 
-14. osquery tables provide a point-in-time state of the system. The extension
-    tables are evented tables and therefore remove any blind spot between 2
-    queries. Both the form factors have their own distinct advantages. On top of
-    it, the extension enables osquery to be a single agent for all data
-    collection needs from the endpoint i.e. live investigation, real time state
-    changes and log monitoring.
+osquery tables provide a point-in-time state of the system. The extension
+tables are evented tables and therefore remove any blind spot between 2
+queries. Both the form factors have their own distinct advantages. On top of
+it, the extension enables osquery to be a single agent for all data
+collection needs from the endpoint i.e. live investigation, real time state
+changes, performance monitoring and log monitoring.
 
-15. Is there a cleanup utility in such a case?
+9. How to upgrade from the last released extension version (1.0.22.2)?
 
-16. Yes. You can use *\_cleanup.bat.* It would need to be launched from an admin
-    console
+Unfortunately a non-disruptive upgrade is not supported at this point. The
+clean way of upgrading would be: *Stop the osquery service. Run the cleanup
+utility. Replace the file plgx_win_extension.ext.exe. Re-start the service.*
+Any previously stored data tables will be lost.
 
-17. How to upgrade from the last released extension version (1.0.22.2)?
+10. What if something breaks?
 
-18. Unfortunately a non-disruptive upgrade is not supported at this point. The
-    clean way of upgrading would be: *Stop the osquery service. Run the cleanup
-    utility. Replace the file plgx_win_extension.ext.exe. Re-start the service.*
-    Any previously stored data tables will be lost.
+You get to keep both the pieces. Isn't that great?
 
-19. What if something breaks?
+11. Do you also have fleet manager that provides out-of-box support for these
+tables and deployment of extension?
 
-20. You get to keep both the pieces. Isn't that great?
+Yes, we do. Feel welcome to contact us at info\@polylogyx.com
 
-21. Do you also have fleet manager that provides out-of-box support for these
-    tables and deployment of extension?
+12. I want to report an issue.
 
-22. Yes, we do. Feel welcome to contact us at info\@polylogyx.com
+You can log it here, mail to open\@polylogyx.com or find us on [osquery
+slack](https://osquery.slack.com/) at channel \# polylogyx-extension
 
-23. I want to report an issue.
+13. What kind of performance penalities are introduced by the extension?
 
-24. You can log it here, mail to open\@polylogyx.com or find us on [osquery
-    slack](https://osquery.slack.com/) at channel \# polylogyx-extension
+The extension is a silent monitoring tool and barely takes any system resources. However, depending on the aggressiveness of the queries, the quality of event filters and the system activity, the performance could vary from system to system. By using the suggest config and flags we have provided, in the worst case also it remaind under 100 MB of RAM usage. However, the differential nature of osquery scheduled queries can add some burden on osquery, but again depending on how much of activity on the system and the query intervals.
 
-25. Any known issues?
+14. Any known issues?
 
-26. There is a small race between application of filters and the event
-    collection, so for a short windows events that are supposed to be fitered
-    get captured.
+There is a small race between application of filters and the event
+collection, so for a short windows events that are supposed to be fitered
+get captured.
