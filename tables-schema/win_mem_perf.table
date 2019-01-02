@@ -1,0 +1,14 @@
+TableColumns columns() const
+{
+      return{
+            std::make_tuple("physical_memory_load", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("total_physical", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("available_physical", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("total_pagefile", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("available_pagefile", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("total_virtual", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("available_virtual", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("available_extended_memory", BIGINT_TYPE, ColumnOptions::DEFAULT),
+       };
+}
+

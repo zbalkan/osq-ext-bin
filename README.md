@@ -163,7 +163,7 @@ With the extension version 1.0.24 a new table has been introduced called win_log
 	
 Where 'plugins' is an array of different type of log parsers. Currently only 'text' logs are supported and therefore we call the log parser as 'tail' because it kind of mimics the unix 'tail' functionality. This name can not be changed when monitoring text based log files. The 'logger_watch_files' is an array of full file paths that need to be monitored, with an optional array of regex patterns to be matched against each log entry. If no pattern is provided, all the log entries are captured in the win_logger_events table, or else only those entries that matched the particular pattern.
 
-In the 'test-tools' folder, a batch file is provided that writes arbitrary data to files at location c:\temp\tail.txt & c:\temt\tail2.txt. When the batch is invoked with osquery and PolyLogyx Extension running in the background, the changes to the files can be retrieved via the queries to win_logger_events as follows:
+In the [test-tools](https://github.com/polylogyx/osq-ext-bin/tree/master/test-tools) folder, a batch file is provided that writes arbitrary data to files at location c:\temp\tail.txt & c:\temt\tail2.txt. When the batch is invoked with osquery and PolyLogyx Extension running in the background, the changes to the files can be retrieved via the queries to win_logger_events as follows:
 
 	osquery> select * from osquery_extensions;
 	+-------+--------------------+---------+-------------+-------------------------+-----------+

@@ -1,0 +1,26 @@
+TableColumns columns() const
+{
+      return{
+            std::make_tuple("name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("pid", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("user_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("priviledged_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("processor_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("thread_count", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("working_set", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("creating_process_id", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("elapsed_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("handle_count", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("io_data_bytes_per_sec", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("io_read_bytes_per_sec", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("io_read_ops_per_sec", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("io_write_bytes_per_sec", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("io_write_ops_per_sec", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("non_paged_pool_bytes", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("page_pool_bytes_peak", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("priority_base", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("private_bytes", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("working_set_peak", TEXT_TYPE, ColumnOptions::DEFAULT),
+       };
+}
+
