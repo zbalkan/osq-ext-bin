@@ -22,6 +22,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 15) Query the state of the endpoint security solution (e.g. AV)
 16) Sysmon style events for RemoteThread and OpenProcess
 17) Map of process and loaded DLLs (Images)
+18) Ability to monitor application specific log files
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
@@ -33,6 +34,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_http_events 
 - win_image_load_events 
 - win_image_load_process_map
+- win_logger_events
 - win_msr
 - win_obfuscated_ps
 - win_pefile_events 
@@ -130,15 +132,86 @@ Event filters are supported on following tables and columns:
 
 The event filters are inspired from the filters on the popular IR tool [sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon). The filtering conditions in osquery.conf file provided with the extension are derived from the high fidelity sysmon filters built by [SwiftOnSecurity](https://github.com/SwiftOnSecurity/sysmon-config) and its fork by [ion-storm](https://github.com/ion-storm/sysmon-config). Many other configurations can be created. 
 
-## 3 Extension SDK
+## 3 Application Log Monitoring
+
+With the extension version 1.0.24 a new table has been introduced called win_logger_events. This table can be configured to monitor arbitrary application log files (e.g. IIS logs, Apache logs, Windows SetupAPI logs etc) as long as the log is in ASCII format. Each log entry is treated as an 'event', and as new log entries are populated, the 'event' is recorded in the table which can then be queried using the standard osquery SQL form factor. To avoid indundation of logs, targeted log collection can be done by provided regex filters. The win_logger_events table can be configured in the osquery.conf as follows:
+
+	"win_logger_plugin": {
+		"plugins": 
+		[
+				{
+					"logger_name": "tail",
+					"logger_watch_files": 
+					[
+						{
+							"watch_file_path": "C:\\temp\\tail.txt"
+						},
+
+						{
+							"watch_file_path": "C:\\temp\\tail2.txt",
+							"file_regex_pattern" : ["(.*) (\\d+): \\[([^\\]]+)\\] (.*)", "((.|\\r\\n)*)(secret2)(.*)"]
+						},
+						
+						{
+							"watch_file_path": "C:\\Users\\admin\\Downloads\\tail.txt",
+							"file_regex_pattern": ["((.|\\r\\n)*)(secret3)(.*)", "regex2"]
+						}			
+					]
+				}	
+		]
+	}
+	
+Where 'plugins' is an array of different type of log parsers. Currently only 'text' logs are supported and therefore we call the log parser as 'tail' because it kind of mimics the unix 'tail' functionality. This name can not be changed when monitoring text based log files. The 'logger_watch_files' is an array of full file paths that need to be monitored, with an optional array of regex patterns to be matched against each log entry. If no pattern is provided, all the log entries are captured in the win_logger_events table, or else only those entries that matched the particular pattern.
+
+In the 'test-tools' folder, a batch file is provided that writes arbitrary data to files at location c:\temp\tail.txt & c:\temt\tail2.txt. When the batch is invoked with osquery and PolyLogyx Extension running in the background, the changes to the files can be retrieved via the queries to win_logger_events as follows:
+
+	osquery> select * from osquery_extensions;
+	+-------+--------------------+---------+-------------+-------------------------+-----------+
+	| uuid  | name               | version | sdk_version | path                    | type      |
+	+-------+--------------------+---------+-------------+-------------------------+-----------+
+	| 0     | core               | 3.3.1   | 0.0.0       | \\.\pipe\shell.em       | core      |
+	| 14397 | plgx_win_extension | 1.0.23  | 0.0.0       | \\.\pipe\shell.em.14397 | extension |
+	+-------+--------------------+---------+-------------+-------------------------+-----------+
+
+	osquery> select * from win_logger_events;
+	+-------------+-------------------+----------------+
+	| logger_name | logger_watch_file | log_entry      |
+	+-------------+-------------------+----------------+
+	| tail        | C:\temp\tail.txt  | hellotail 5
+	|
+	| tail        | C:\temp\tail2.txt | secret2        |	
+	| tail        | C:\temp\tail.txt  | hellotail 4
+	|
+	| tail        | C:\temp\tail2.txt | secret2        |
+	| tail        | C:\temp\tail.txt  | hellotail 2
+	|
+	| tail        | C:\temp\tail.txt  | hellotail 3
+	|
+	| tail        | C:\temp\tail.txt  | hellotail 8
+	|
+	| tail        | C:\temp\tail2.txt | secret2        |
+	| tail        | C:\temp\tail.txt  | hellotail 7
+	|
+	| tail        | C:\temp\tail2.txt | secret2        |
+	| tail        | C:\temp\tail2.txt | secret2        |
+	| tail        | C:\temp\tail2.txt | secret2        |
+	| tail        | C:\temp\tail2.txt | secret2        |
+	| tail        | C:\temp\tail.txt  | hellotail 1
+	
+	| tail        | C:\temp\tail.txt  | hellotail 6
+	|
+	| tail        | C:\temp\tail2.txt | secret2        |
+	+-------------+-------------------+----------------+
+
+## 4 Extension SDK
 
 With the release 1.0.23.3, we have introduced an experimental SDK that allows the extension to be used as a bridge between an endpoint application and osquery. For more details, check [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-## 4 FAQ
+## 5 FAQ
 
 Q) What is extension version?
 
-A) It is 1.0.23.3. It is digitally signed by PolyLogyx
+A) It is 1.0.24.4. It is digitally signed by PolyLogyx
 
 Q) What osquery version to use?
 
@@ -162,7 +235,7 @@ A) No. The extension executable is self sufficient. The kernel component is auto
 
 Q) osquery has a lot of tables too. What advantage do the extensions' tables provide?
 
-A) osquery tables provide a point-in-time state of the system. The extension tables are evented tables and therefore remove any blind spot between 2 queries. Both the form factors have their own distinct advantages.
+A) osquery tables provide a point-in-time state of the system. The extension tables are evented tables and therefore remove any blind spot between 2 queries. Both the form factors have their own distinct advantages. On top of it, the extension enables osquery to be a single agent for all data collection needs from the endpoint i.e. live investigation, real time state changes and log monitoring.
 
 Q) Is there a cleanup utility in such a case?
 
