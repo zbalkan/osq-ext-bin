@@ -23,6 +23,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 16) Sysmon style events for RemoteThread and OpenProcess
 17) Map of process and loaded DLLs (Images)
 18) Ability to monitor application specific log files
+19) Ability to monitor application performances
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
@@ -36,11 +37,13 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_image_load_process_map
 - win_logger_events
 - win_msr
+- win_mem_perf
 - win_obfuscated_ps
 - win_pefile_events 
 - win_process_events 
 - win_process_handles
-- win_process_open_events 
+- win_process_open_events
+- win_process_perf 
 - win_registry_events 
 - win_remote_thread_events 
 - win_removable_media_events 
