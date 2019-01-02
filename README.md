@@ -121,10 +121,11 @@ Event filters are supported on following tables and columns:
 |win_socket_events|process_name, remote_port, remote_address|
 |win_file_events|target_path, process_name|
 |win_remote_thread_events|module_name, function_name, src_path, target_path|
-|win_process_open_events|src_path, target_path|
+|win_process_open_events|src_path, target_path, granted_access|
 |win_dns_events|domain_name|
 |win_dns_response_events|domain_name|
 |win_image_load_process_map|image_path|
+|win_image_load_events|image_path|
 
 # 2.3 Credit for filters
 
