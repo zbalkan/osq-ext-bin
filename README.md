@@ -151,10 +151,10 @@ configurations can be created.
 ----------------------------
 
 With the extension version 1.0.24 a new table has been introduced called
-win_logger_events. This table can be configured to monitor arbitrary application
+**win_logger_events**. This table can be configured to monitor arbitrary application
 log files (e.g. IIS logs, Apache logs, Windows SetupAPI logs etc) as long as the
-log is in ASCII format. Each log entry is treated as an 'event', and as new log
-entries are populated, the 'event' is recorded in the table which can then be
+log is in ASCII format. Each log entry is treated as an **event**, and as new log
+entries are populated, the **event** is recorded in the table which can then be
 queried using the standard osquery SQL form factor. To avoid indundation of
 logs, targeted log collection can be done by provided regex filters. The
 win_logger_events table can be configured in the osquery.conf as follows:
@@ -186,16 +186,16 @@ win_logger_events table can be configured in the osquery.conf as follows:
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Where 'plugins' is an array of different type of log parsers. Currently only
-'text' logs are supported and therefore we call the log parser as 'tail' because
-it kind of mimics the unix 'tail' functionality. This name can not be changed
-when monitoring text based log files. The 'logger_watch_files' is an array of
+Where **plugins** is an array of different type of log parsers. Currently only
+text logs are supported and therefore we call the log parser as 'tail' because
+it kind of mimics the unix **tail** functionality. This name can not be changed
+when monitoring text based log files. The **logger_watch_files** is an array of
 full file paths that need to be monitored, with an optional array of regex
 patterns to be matched against each log entry. If no pattern is provided, all
 the log entries are captured in the win_logger_events table, or else only those
 entries that matched the particular pattern.
 
-In the 'test-tools' folder, a batch file is provided that writes arbitrary data
+In the [test-tools](https://github.com/polylogyx/osq-ext-bin/tree/master/test-tools) folder, a batch file is provided that writes arbitrary data
 to files at location c:\temp\tail.txt & c:\temp\tail2.txt. When the batch file is invoked with osquery
 and PolyLogyx Extension running in the background, the changes to the files can
 be retrieved via the queries to win_logger_events as follows:
@@ -206,7 +206,7 @@ osquery> select * from osquery_extensions;
 | uuid  | name               | version | sdk_version | path                    | type      |
 +-------+--------------------+---------+-------------+-------------------------+-----------+
 | 0     | core               | 3.3.1   | 0.0.0       | \\.\pipe\shell.em       | core      |
-| 14397 | plgx_win_extension | 1.0.23  | 0.0.0       | \\.\pipe\shell.em.14397 | extension |
+| 14397 | plgx_win_extension | 1.0.24  | 0.0.0       | \\.\pipe\shell.em.14397 | extension |
 +-------+--------------------+---------+-------------+-------------------------+-----------+
 
 osquery> select * from win_logger_events;
