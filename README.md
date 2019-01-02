@@ -207,7 +207,8 @@ Event filters are supported on following tables and columns:
 | win_process_open_events                                     | src_path, target_path, granted_access             |
 | win_dns_events                                              | domain_name                                       |
 | win_dns_response_events                                     | domain_name                                       |
-| win_image_load_events win_image_load_process_map image_path | image_path                                        |
+| win_image_load_events                                       | image_path                                        |
+|win_image_load_process_map                                   | image_path                                        |
 
 2.3 Credit for filters
 ======================
