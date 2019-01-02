@@ -196,7 +196,7 @@ the log entries are captured in the win_logger_events table, or else only those
 entries that matched the particular pattern.
 
 In the 'test-tools' folder, a batch file is provided that writes arbitrary data
-to files at location c:.txt & c:2.txt. When the batch is invoked with osquery
+to files at location c:\temp\tail.txt & c:\temp\tail2.txt. When the batch file is invoked with osquery
 and PolyLogyx Extension running in the background, the changes to the files can
 be retrieved via the queries to win_logger_events as follows:
 
