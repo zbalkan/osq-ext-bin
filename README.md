@@ -174,11 +174,6 @@ win_logger_events table can be configured in the osquery.conf as follows:
                     {
                         "watch_file_path": "C:\\temp\\tail2.txt",
                         "file_regex_pattern" : ["(.*) (\\d+): \\[([^\\]]+)\\] (.*)", "((.|\\r\\n)*)(secret2)(.*)"]
-                    },
-                    
-                    {
-                        "watch_file_path": "C:\\Users\\admin\\Downloads\\tail.txt",
-                        "file_regex_pattern": ["((.|\\r\\n)*)(secret3)(.*)", "regex2"]
                     }           
                 ]
             }   
@@ -253,7 +248,7 @@ osquery. For more details, check
 
 1.  What is extension version?
 
-It is 1.0.24.4. It is digitally signed by PolyLogyx.
+It is 1.0.25.5. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 

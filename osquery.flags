@@ -15,7 +15,7 @@
 --allow_unsafe
 --extensions_autoload=C:\programdata\osquery\extensions.load
 --extensions_interval=10
---extensions_timeout=10
+--extensions_timeout=90
 --database_dump=false
 --schedule_default_interval=30
 --pack_refresh_interval=30
