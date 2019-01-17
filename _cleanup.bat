@@ -21,6 +21,11 @@ IF %ERRORLEVEL% EQU 0 (
    EXIT /B 1
 )
 
+echo "Terminating the extension process, if present"
+taskkill /F /IM plgx_win_extension.ext.exe
+
+timeout /t 5 /nobreak
+
 echo "Cleaning the db files.."
 REM Clean up the extension db
 rmdir /S /Q c:\ProgramData\plgx_win_extension >nul 2>&1
