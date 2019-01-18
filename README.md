@@ -314,11 +314,15 @@ Yes, we do. Feel welcome to contact us at info\@polylogyx.com
 You can log it here, mail to open\@polylogyx.com or find us on [osquery
 slack](https://osquery.slack.com/) at channel \# polylogyx-extension
 
-13. What kind of performance penalities are introduced by the extension?
+13. The default config provided here seems to be collecting event only via a handful of tables. What's the story there?
 
-The extension is a silent monitoring tool and barely takes any system resources. However, depending on the aggressiveness of the queries, the quality of event filters and the system activity, the performance could vary from system to system. By using the suggest config and flags we have provided, in the worst case also it remaind under 100 MB of RAM usage. However, the differential nature of osquery scheduled queries can add some burden on osquery, but again depending on how much of activity on the system and the query intervals.
+End point telemetry, especically from Windows systems, can be overwhelming despite all the filters and white noise suppression. The default config here, therefore, is designed to primarily collect 2 kinds of events i.e. Process Start and Network. This is inspired by the recommendations in this [blog](https://www.redcanary.com/blog/carbon-black-response-splunk-integration) from a famous MDR organization. Nevertheless, you are welcome to tune it to your needs. That's the beauty of osquery i.e. all you need to do is simply add more queries.
 
-14. Any known issues?
+14. What kind of performance penalities are introduced by the extension?
+
+The extension is a silent monitoring tool and barely takes any system resources. However, depending on the aggressiveness of the queries, the quality of event filters and the system activity, the performance could vary from system to system. By using the suggested config and flags we have provided, in the worst case also it remaind under 100 MB of RAM usage. However, the differential nature of osquery scheduled queries can add some burden on osquery, but again depending on how much of activity on the system and the query intervals.
+
+15. Any known issues?
 
 There is a small race between application of filters and the event
 collection, so for a short windows events that are supposed to be fitered
