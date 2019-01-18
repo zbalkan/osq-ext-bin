@@ -316,7 +316,7 @@ slack](https://osquery.slack.com/) at channel \# polylogyx-extension
 
 13. The default config provided here seems to be collecting event only via a handful of tables. What's the story there?
 
-End point telemetry, especically from Windows systems, can be overwhelming despite all the filters and white noise suppression. The default config here, therefore, is designed to primarily collect 2 kinds of events i.e. Process Start and Network. This is inspired by the recommendations in this [blog](https://www.redcanary.com/blog/carbon-black-response-splunk-integration) from a famous MDR organization. Nevertheless, you are welcome to tune it to your needs. That's the beauty of osquery i.e. all you need to do is simply add more queries.
+Endpoint telemetry, especically from Windows systems, can be overwhelming despite all the filters and white noise suppression. The default config here, therefore, is designed to primarily collect 2 kinds of events i.e. Process Start and Network. This is inspired by the recommendations in this [blog](https://www.redcanary.com/blog/carbon-black-response-splunk-integration) from a famous MDR organization. Nevertheless, you are welcome to tune it to your needs. That's the beauty of osquery i.e. all you need to do is simply add more queries.
 
 14. What kind of performance penalities are introduced by the extension?
 
