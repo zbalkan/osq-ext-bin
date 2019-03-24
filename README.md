@@ -335,11 +335,14 @@ it, the extension enables osquery to be a single agent for all data
 collection needs from the endpoint i.e. live investigation, real time state
 changes, performance monitoring and log monitoring.
 
-9. How to upgrade from the last released extension version (1.0.22.2)?
+9. How to upgrade from the earlier released extension versions?
 
-Unfortunately a non-disruptive upgrade is not supported at this point. The
-clean way of upgrading would be: *Stop the osquery service. Run the cleanup
-utility. Replace the file plgx_win_extension.ext.exe. Re-start the service.*
+Unfortunately a **non-disruptive upgrade is not supported at this point**. The
+clean way of upgrading would be: 
+- Stop the osquery service
+- Run the cleanup (*_cleanup.bat*) utility
+- Replace the file plgx_win_extension.ext.exe
+- Re-start the service
 Any previously stored data tables will be lost.
 
 10. What if something breaks?
