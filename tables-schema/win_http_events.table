@@ -1,7 +1,8 @@
 TableColumns columns() const
 {
   return{
-      std::make_tuple("event_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("event_type", TEXT_TYPE, ColumnOptions::DEFAULT),
+	    std::make_tuple("action", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("url", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),

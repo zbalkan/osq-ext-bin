@@ -4,7 +4,7 @@ TableColumns columns() const
             std::make_tuple("name", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("pid", INTEGER_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("user_time", TEXT_TYPE, ColumnOptions::DEFAULT),
-            std::make_tuple("priviledged_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("privileged_time", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("processor_time", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("thread_count", INTEGER_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("working_set", TEXT_TYPE, ColumnOptions::DEFAULT),
