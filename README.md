@@ -26,6 +26,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 19) Ability to monitor application performances
 20) Scan the memory of processes for implants, shell code, hollowing or reflective DLL loading
 21) Ability to generate the memory dumps of such processes
+22) Visibility into TLS/SSL traffic
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
@@ -51,6 +52,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_suspicious_process_scan
 - win_suspicious_process_dump
 - win_socket_events 
+- win_ssl_events
 - win_yara_events
 
 The detailed schema for these [tables](https://github.com/polylogyx/osq-ext-bin/tree/master/tables-schema). is available 
@@ -137,7 +139,7 @@ Event filters are supported on following tables and columns:
 | win_dns_events                                              | domain_name                                       |
 | win_dns_response_events                                     | domain_name                                       |
 | win_image_load_events                                       | image_path                                        |
-|win_image_load_process_map                                   | image_path                                        |
+| win_image_load_process_map                                  | image_path                                        |
 
 2.3 Credit for filters
 ======================
@@ -277,7 +279,43 @@ osquery> select * from file where directory="C:\ProgramData\plgx_win_extension\s
 +-------------------------------------------------------------------------------------------+----------------------------------------------------------------+----------------------------+-------+-----+-----+------+--------+---------+------------+------------+------------+------------+-------+------------+---------+---------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-5 Extension SDK
+
+5 SSL/TLS certificates monitoring
+------------------------------------------
+
+With the version 1.0.28.8, we have introduced a table that captures the SSL/TLS credentials for every TLS connection from the agent. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> osquery> .schema win_ssl_events
+CREATE TABLE win_ssl_events(`event_type` TEXT, `action` TEXT, `eid` TEXT, `subject_name` TEXT, `issuer_name` TEXT, `serial_number` TEXT, `dns_names` TEXT, `pid` BIGINT, `process_guid` TEXT, `process_name` TEXT, `remote_address` TEXT, `remote_port` INTEGER, `time` BIGINT, `utc_time` TEXT);
+osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Given the vast number of free or stolen TLS certificates, their rampant usage in C2 and Phishing (Domain spoofing), we believe this table can bring a great deal of visibility to counter such attacks. Below is a sample entry of all the websites with ["Let's Encrypt"](https://www.thesslstore.com/blog/lets-encrypt-phishing/) as the CA from a test machine. We believe this level of visbility will help beautiful services like "Let's Encrypt" remain beautiful and their misuse could be restricted.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select subject_name, issuer_name, dns_names from win_ssl_events where issuer_name like '%Encrypt%';
++----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| subject_name                                                               | issuer_name                                                                                          | dns_names                                                                                                                                                           |
++----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| /CN=*.polylogyx.com,/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3    | /C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3,/O=Digital Signature Trust Co./CN=DST Root CA X3 | DNS:*.polylogyx.com, DNS:polylogyx.com                                                                                                                              |
+| /CN=www.iitgoa.ac.in                                                       | /C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3                                                  | DNS:www.iitgoa.ac.in                                                                                                                                                |
+| /CN=*.polylogyx.com,/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3    | /C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3,/O=Digital Signature Trust Co./CN=DST Root CA X3 | DNS:*.polylogyx.com, DNS:polylogyx.com                                                                                                                              |
+| /CN=admin.mutinyhq.com,/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3 | /C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3,/O=Digital Signature Trust Co./CN=DST Root CA X3 | DNS:admin.mutinyhq.com, DNS:api.mutinyhq.com, DNS:api.mutinyhq.io, DNS:app.mutinyhq.com, DNS:preview.mutinyhq.com, DNS:referrals.mutinyhq.com, DNS:www.mutinyhq.com |
++----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the osquery options.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_EnableSSL": "true"
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+6 Extension SDK
 ---------------
 
 With the release 1.0.23.3, we have introduced an experimental SDK that allows
@@ -285,12 +323,12 @@ the extension to be used as a bridge between an endpoint application and
 osquery. For more details, check
 [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-6 FAQ
+7 FAQ
 -----
 
 1.  What is extension version?
 
-It is 1.0.27.7. It is digitally signed by PolyLogyx.
+It is 1.0.28.8. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 
@@ -335,12 +373,14 @@ it, the extension enables osquery to be a single agent for all data
 collection needs from the endpoint i.e. live investigation, real time state
 changes, performance monitoring and log monitoring.
 
-9. How to upgrade from the last released extension version (1.0.22.2)?
+9. How to upgrade from the earlier released extension version (e.g 1.0.22.2)?
 
-Unfortunately a non-disruptive upgrade is not supported at this point. The
-clean way of upgrading would be: *Stop the osquery service. Run the cleanup
+The clean way of upgrading would be: *Stop the osquery service. Run the cleanup
 utility. Replace the file plgx_win_extension.ext.exe. Re-start the service.*
 Any previously stored data tables will be lost.
+
+We have also provided a powershell script for a non-disruptive upgrade of extension.
+The script needs to be invoked from an admin priviledge command prompt from the osquery's install dir
 
 10. What if something breaks?
 
