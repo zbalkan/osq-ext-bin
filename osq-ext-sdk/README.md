@@ -5,7 +5,7 @@ PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform ex
 # 1.1 What it does:
 The SDK ( a DLL and a header file) allows any local application to be built (or an existing one to leverage) the osquery data by sending the queries. It is not to be confused as an alternate for the osqueryi shell. The shell is a near complete SQL shell that provides a CLI for osquery. However there are certain limitations with the shell
 
-- It can be used for scripting
+- It can not be used for scripting
 - It is difficult to consume osquery data via the shell into a 3rd party application (e.g. an MDM or a compliance application)
 - It is not straightforward to share extensions between the shell and the daemon.
 
