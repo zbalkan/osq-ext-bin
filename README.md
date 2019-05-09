@@ -1,4 +1,4 @@
-## 1. PolyLogyx osquery Extension for Windows
+﻿## 1. PolyLogyx osquery Extension for Windows
 
 PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.28.8
 
@@ -140,6 +140,7 @@ Event filters are supported on following tables and columns:
 | win_dns_response_events                                     | domain_name                                       |
 | win_image_load_events                                       | image_path                                        |
 | win_image_load_process_map                                  | image_path                                        |
+| win_ssl_events                                              | process_name                                      |
 
 2.3 Credit for filters
 ======================
@@ -338,7 +339,7 @@ It has been built and tested with 3.2.6. It also works with 3.3.0.
 
 Stop the osquery service, replace the osquery.flags and osquery.conf with
 the ones provided here. Feel free to edit them to bring the configurations
-from previous files. Restart osqueryd/osqueryi
+from previous files. Restart osqueryd/osqueryi. You could also use *\plgxugrade.ps1* powershell script.
 
 4.  Extension is loaded by osqueryd. Can I also see the extension tables by
     running osqueryi?
@@ -379,7 +380,7 @@ The clean way of upgrading would be: *Stop the osquery service. Run the cleanup
 utility. Replace the file plgx_win_extension.ext.exe. Re-start the service.*
 Any previously stored data tables will be lost.
 
-We have also provided a powershell script for a non-disruptive upgrade of extension.
+We have also provided a powershell script *\plgxugrade.ps1* for a non-disruptive upgrade of extension.
 The script needs to be invoked from an admin priviledge command prompt from the osquery's install dir
 
 10. What if something breaks?
