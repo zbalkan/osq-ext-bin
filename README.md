@@ -1,6 +1,6 @@
 ﻿## 1. PolyLogyx osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.29.9 (md5: e6cb470712fd47e0d3ede7c20b65c0b6)
+PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.30.10 (md5: 89ad8e83cfc0da36fd9a405b3576c983)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -284,15 +284,17 @@ osquery> select * from file where directory="C:\ProgramData\plgx_win_extension\s
 5 SSL/TLS certificates monitoring
 ------------------------------------------
 
-With the version 1.0.28.8, we have introduced a table that captures the SSL/TLS credentials for every TLS connection from the agent. 
+With the version 1.0.30.10, we have introduced a table that captures the SSL/TLS credentials for every TLS connection from the agent.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-osquery> osquery> .schema win_ssl_events
-CREATE TABLE win_ssl_events(`event_type` TEXT, `action` TEXT, `eid` TEXT, `subject_name` TEXT, `issuer_name` TEXT, `serial_number` TEXT, `dns_names` TEXT, `pid` BIGINT, `process_guid` TEXT, `process_name` TEXT, `remote_address` TEXT, `remote_port` INTEGER, `time` BIGINT, `utc_time` TEXT);
+osquery> osquery> osquery> .schema win_ssl_events
+CREATE TABLE win_ssl_events(`event_type` TEXT, `action` TEXT, `eid` TEXT, `subject_name` TEXT, `issuer_name` TEXT, `serial_number` TEXT, `dns_names` TEXT, `ja3_md5` TEXT, `ja3s_md5` TEXT, `pid` BIGINT, `process_guid` TEXT, `process_name` TEXT, `remote_address` TEXT, `remote_port` INTEGER, `time` BIGINT, `utc_time` TEXT);
 osquery>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Given the vast number of free or stolen TLS certificates, their rampant usage in C2 and Phishing (Domain spoofing), we believe this table can bring a great deal of visibility to counter such attacks. Below is a sample entry of all the websites with ["Let's Encrypt"](https://www.thesslstore.com/blog/lets-encrypt-phishing/) as the CA from a test machine. We believe this level of visbility will help beautiful services like "Let's Encrypt" remain beautiful and their misuse could be restricted.
+
+This table also provides a mechanism for TLS connection fingerprinting. The mechanism called [JA3](https://engineering.salesforce.com/tls-fingerprinting-with-ja3-and-ja3s-247362855967) was invented by Salesforce Engg and is typically implemented at NSMs. We have implemented it at the host level and exported the data using osquery's SQL tables, that can provide complete visibility into SSL connections at every endpoint.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery> select subject_name, issuer_name, dns_names from win_ssl_events where issuer_name like '%Encrypt%';
@@ -305,6 +307,24 @@ osquery> select subject_name, issuer_name, dns_names from win_ssl_events where i
 | /CN=admin.mutinyhq.com,/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3 | /C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3,/O=Digital Signature Trust Co./CN=DST Root CA X3 | DNS:admin.mutinyhq.com, DNS:api.mutinyhq.com, DNS:api.mutinyhq.io, DNS:app.mutinyhq.com, DNS:preview.mutinyhq.com, DNS:referrals.mutinyhq.com, DNS:www.mutinyhq.com |
 +----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 osquery>
+
+osquery> select process_name, ja3_md5, ja3s_md5 from win_ssl_events limit 10;
++--------------------------------------------------------------------------------------------+----------------------------------+----------------------------------+
+| process_name                                                                               | ja3_md5                          | ja3s_md5                         |
++--------------------------------------------------------------------------------------------+----------------------------------+----------------------------------+
+| C:\Windows\System32\svchost.exe                                                            | bd0bf25947d4a37404f0424edf4db9ad | e8eeb57c97a5bc68cfd37bead3d8484c |
+| C:\Program Files\WindowsApps\Microsoft.SkypeApp_14.46.60.0_x64__kzf8qxf38zg5c\SkypeApp.exe | 3b5074b1b5d032e5620f69f9f700ff0e | 5af13b1d120981869f2623b5ecba1611 |
+| C:\Windows\System32\svchost.exe                                                            | bd0bf25947d4a37404f0424edf4db9ad | 69c57a57c3a2471528b239078304cee6 |
+| C:\Windows\System32\svchost.exe                                                            | 3b5074b1b5d032e5620f69f9f700ff0e | 69c57a57c3a2471528b239078304cee6 |
+| C:\Windows\System32\backgroundTaskHost.exe                                                 | 10ee8d30a5d01c042afd7b2b205facc4 | 13a6525bfe9743d5494febd3f60fcacc |
+| C:\Program Files (x86)\Microsoft Office\root\Office16\POWERPNT.EXE                         | ce5f3254611a8c095a3d821d44539877 | e7fc1e025bac30623869f38bfe3eebc2 |
+| C:\Windows\System32\svchost.exe                                                            | bd0bf25947d4a37404f0424edf4db9ad | 69c57a57c3a2471528b239078304cee6 |
+| C:\Windows\System32\svchost.exe                                                            | bd0bf25947d4a37404f0424edf4db9ad | 69c57a57c3a2471528b239078304cee6 |
+| C:\Program Files (x86)\Microsoft Office\root\Office16\POWERPNT.EXE                         | ce5f3254611a8c095a3d821d44539877 | d5955b206cc2988061a1880c3803625c |
+| C:\Windows\System32\svchost.exe                                                            | bd0bf25947d4a37404f0424edf4db9ad | 3283d8fb83fcff552063fe0baf6416a5 |
++--------------------------------------------------------------------------------------------+----------------------------------+----------------------------------+
+osquery>
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the osquery options.
