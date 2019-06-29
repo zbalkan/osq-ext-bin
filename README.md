@@ -349,7 +349,7 @@ osquery. For more details, check
 
 1.  What is extension version?
 
-It is 1.0.28.8. It is digitally signed by PolyLogyx.
+It is 1.0.30.10. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 
