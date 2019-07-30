@@ -166,7 +166,7 @@ the evented version of yara table (win_yara_events) is supported. A sample confi
            "C:\\ProgramData\\osquery\\yara\\eicar.yar"
            ],
        "yara_test_group2": [
-           "C:\\ProgramData\\osquery\\plgx_win_extn\\yara-rules\\ExampleRule.yar"
+           "C:\\ProgramData\\osquery\\yara\\ExampleRule.yar"
            ]
        },
    "file_paths": {
