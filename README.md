@@ -198,7 +198,7 @@ osquery> select * from win_yara_events;
 +--------------------------------------+--------------+-----------------------+---------+-------+--------------------------------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Where the **matches** column determines if any of the signature in the yara file matched with the target file and **count** gives the count of rules that matched. For a file event to be considered for matching against the yara signatures, it should also satisfy the file filters criteria.
+where the **matches** column determines if any of the signature in the yara file matched with the target file and **count** gives the count of rules that matched. For a file event to be considered for matching against the yara signatures, it should also satisfy the file filters criteria.
 
 4 Application Log Monitoring
 ----------------------------
