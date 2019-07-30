@@ -153,7 +153,54 @@ derived from the high fidelity sysmon filters built by
 by [ion-storm](https://github.com/ion-storm/sysmon-config). Many other
 configurations can be created.
 
-3 Application Log Monitoring
+3 YARA Matching on file events
+------------------------------
+
+The extension can be configure to match file events with yara rules. The syntax for configuring yara follows the same 
+syntax as in the [osquery](https://osquery.readthedocs.io/en/stable/deployment/yara/). For the current release, only 
+the evented version of yara table (win_yara_events) is supported. A sample config would look like following:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"yara": {
+   "signatures": {
+       "yara_test_group1": [
+           "C:\\ProgramData\\osquery\\yara\\eicar.yar"
+           ],
+       "yara_test_group2": [
+           "C:\\ProgramData\\osquery\\plgx_win_extn\\yara-rules\\ExampleRule.yar"
+           ]
+       },
+   "file_paths": {
+       "test_files_1": [ "yara_test_group1" ],
+       "test_files_2": [ "yara_test_group2" ]
+       }
+   },
+
+   "file_paths": {
+       "test_files_1": [ "C:\\Users\\Admin\\Downloads" ],
+       "test_files_2": [ "C:\\Users\\Default" ]
+   },
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The above config will match yara signatures belonging to **yara_test_group1** to any file created or modified under the folder **C:\Users\Admin\Downloads**
+and **yara_test_group2** to files created or modifed under the folder **C:\Users\Default**
+
+The sample out of the win_yara_events table would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_yara_events;
++--------------------------------------+--------------+-----------------------+---------+-------+--------------------------------------+
+| target_path                          | category     | action                | matches | count | eid                                  |
++--------------------------------------+--------------+-----------------------+---------+-------+--------------------------------------+
+| C:\Users\Default\Downloads\eicar.yar | test_files_2 | FILE Created/Modified |         | 0     | 0ECB4AC8-F5A1-45FB-B55D-6C640CA7FFFF |
+| C:\Users\admin\Downloads\hello.txt   | test_files_1 | FILE Created/Modified |         | 0     | 79D16C6D-1DB9-433E-853C-712A0CA7FFFF |
++--------------------------------------+--------------+-----------------------+---------+-------+--------------------------------------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Where the **matches** column determines if any of the signature in the yara file matched with the target file and **count** gives the count of rules that matched. For a file event to be considered for matching against the yara signatures, it should also satisfy the file filters criteria.
+
+4 Application Log Monitoring
 ----------------------------
 
 With the extension version 1.0.24 a new table has been introduced called
@@ -241,7 +288,7 @@ osquery> select * from win_logger_events;
 +-------------+-------------------+----------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-4 Scanning processes for suspicious memory
+5 Scanning processes for suspicious memory
 ------------------------------------------
 
 With the version 1.0.27.7, we have integrated the powerful tool [pe-sieve](https://github.com/hasherezade/pe-sieve) as part of our extension. pe-sieve is a very powerful tool that can scan a process for a variety of malicious implants like shell-codes, API hooks, and replaced/injected PE modules (e.g. process hollowing or reflective DLLs). The original tool can found in the [hasherzade](https://github.com/hasherezade) repository. Leveraging the tool, following 2 new tables have been created.
@@ -281,7 +328,7 @@ osquery> select * from file where directory="C:\ProgramData\plgx_win_extension\s
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-5 SSL/TLS certificates monitoring
+6 SSL/TLS certificates monitoring
 ------------------------------------------
 
 With the version 1.0.30.10, we have introduced a table that captures the SSL/TLS credentials for every TLS connection from the agent.
@@ -336,7 +383,7 @@ A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the o
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-6 Extension SDK
+7 Extension SDK
 ---------------
 
 With the release 1.0.23.3, we have introduced an experimental SDK that allows
@@ -344,7 +391,7 @@ the extension to be used as a bridge between an endpoint application and
 osquery. For more details, check
 [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-7 FAQ
+8 FAQ
 -----
 
 1.  What is extension version?
@@ -430,5 +477,3 @@ The extension is a silent monitoring tool and barely takes any system resources.
 There is a small race between application of filters and the event
 collection, so for a short windows events that are supposed to be fitered
 get captured.
-
-
