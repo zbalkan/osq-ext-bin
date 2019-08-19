@@ -1,6 +1,6 @@
 ﻿## 1. PolyLogyx osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.30.10 (md5: 89ad8e83cfc0da36fd9a405b3576c983)
+PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.31.11 (md5: 3670ff771a8513deb98631de2f1912e0)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -54,6 +54,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_socket_events 
 - win_ssl_events
 - win_yara_events
+- win_yara
 
 The detailed schema for these [tables](https://github.com/polylogyx/osq-ext-bin/tree/master/tables-schema). is available 
 
@@ -396,7 +397,7 @@ osquery. For more details, check
 
 1.  What is extension version?
 
-It is 1.0.30.10. It is digitally signed by PolyLogyx.
+It is 1.0.31.11. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 
