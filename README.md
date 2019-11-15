@@ -1,6 +1,6 @@
 ﻿## 1. PolyLogyx osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.32.12 (md5: 19132590258cc789717aae450a6081cf)
+PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.33.13 (md5: bb8f463277769faf8e75dd5462a3dad0)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -397,11 +397,11 @@ osquery. For more details, check
 
 1.  What is extension version?
 
-It is 1.0.31.11. It is digitally signed by PolyLogyx.
+It is 1.0.33.13. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 
-It has been built and tested with 3.2.6. It also works with 3.3.0.
+It has been built and tested with 3.2.6. It also works with 3.3.0 and 4.0.x
 
 3.  I have installed osquery using the MSI from osquery website. Now what?
 
