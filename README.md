@@ -423,7 +423,7 @@ It does.
 6. Do we need to install the kernel component seperately?
 
 No. The extension executable is self sufficient. The kernel component is
-automatically installed/uninstalled with the load and unlaod of extension.
+automatically installed/uninstalled with the load and unload of extension.
 There are however situations when osquery doesn't un-install the extension very
 cleanly and the drivers may reamin loaded.
 
