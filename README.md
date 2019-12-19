@@ -1,6 +1,6 @@
 ﻿## 1. PolyLogyx osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.33.13 (md5: bb8f463277769faf8e75dd5462a3dad0)
+PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.34.14 (md5: 05e3a274df07dbef792ed6784ed2f590)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -201,6 +201,8 @@ osquery> select * from win_yara_events;
 
 where the **matches** column determines if any of the signature in the yara file matched with the target file and **count** gives the count of rules that matched. For a file event to be considered for matching against the yara signatures, it should also satisfy the file filters criteria.
 
+With the build 1.0.34.14, three new columns have been added in win_yara_events table and they are md5, time, utc_time. This is to improve tracing the events with yara matches.
+
 4 Application Log Monitoring
 ----------------------------
 
@@ -397,7 +399,7 @@ osquery. For more details, check
 
 1.  What is extension version?
 
-It is 1.0.33.13. It is digitally signed by PolyLogyx.
+It is 1.0.34.14. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 

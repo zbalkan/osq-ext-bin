@@ -2,6 +2,9 @@ TableColumns columns() const override
 {
    return{
             std::make_tuple("target_path", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("md5", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+            std::make_tuple("time", osquery::BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
+            std::make_tuple("utc_time", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("category", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("action", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("matches", TEXT_TYPE, ColumnOptions::DEFAULT),
