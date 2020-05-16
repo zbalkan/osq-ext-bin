@@ -1,0 +1,6 @@
+TableColumns columns() const
+{
+    return{
+	    std::make_tuple("source", TEXT_TYPE, ColumnOptions::DEFAULT),
+        };
+}

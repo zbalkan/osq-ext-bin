@@ -1,6 +1,6 @@
 ﻿## 1. PolyLogyx osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.35.15 (md5: 58686cbb1bc1037e52f57879a109cf2a)
+PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.40.1 (md5: d5191895b67d52e4a54c895f4207517a)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -27,12 +27,15 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 20) Scan the memory of processes for implants, shell code, hollowing or reflective DLL loading
 21) Ability to generate the memory dumps of such processes
 22) Visibility into TLS/SSL traffic
+23) Ability to grab Windows Event Logs
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
 
 - win_dns_events
 - win_dns_response_events 
 - win_epp_table
+- win_event_log_channels
+- win_event_log_data
 - win_file_events   
 - win_file_timestomp_events
 - win_http_events 
@@ -202,6 +205,22 @@ osquery> select * from win_yara_events;
 where the **matches** column determines if any of the signature in the yara file matched with the target file and **count** gives the count of rules that matched. For a file event to be considered for matching against the yara signatures, it should also satisfy the file filters criteria.
 
 With the build 1.0.34.14, three new columns have been added in win_yara_events table and they are md5, time, utc_time. This is to improve tracing the events with yara matches.
+
+With the build 1.0.40.1, following yara [externals](https://yara.readthedocs.io/en/v3.4.0/writingrules.html#external-variables) are supported in the rule syntax.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++---------------------------------------------------+---------------------------------------------------+
+| External Variable                                 | Column Names                                      |
+|---------------------------------------------------|---------------------------------------------------|
+| filename                                          | file base name                                    |
+| extension                                         | file extension with leading **.**                 |
+| filepath                                          | full file path                                    |
+| filetype                                          | Upper case extension (DOCX, PDF etc)              |
+| md5                                               | file md5 hash                                     |
++---------------------------------------------------+---------------------------------------------------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With the support of these external variables, the scope of the yara rules that could be consumed by the engine could vastly improve.
 
 4 Application Log Monitoring
 ----------------------------
@@ -386,20 +405,150 @@ A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the o
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-7 Extension SDK
----------------
+7 Windows Event Log tables
+---------------------------
+
+The based osquery tool provided an event driven approach to collect data from Windows Event Log. This requires that the channels from which the events need to be collected have to be provided at the time of provisioning the agent and the tool will restrict the collection of log data to those channels. For purposes of incident response however, the ability to collect any log from any channel (including retrospective logs) is of paramount importance. We have extended osquery's SQL interface in our extension to facilitate this capability making the collection, aggregation and parsing of Windows Event Log data simplified.
+
+With the release 1.0.40.1, two new tables have been provided in the extension. These tables will allow for querying, and collecting, of data from Windows Event Log. These tables are:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> .tables
+<snip>
+  => win_event_log_channels
+  => win_event_log_data
+</snip>
+osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Querying the first of these tables, win_event_log_channels, will result in answering all the log channels available in the system. Querying the second table will provide the data in a given channel.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_event_log_channels;
++----------------------------------------------------------------------------------------+
+| source                                                                                 |
++----------------------------------------------------------------------------------------+
+| Windows PowerShell                                                                     |
+| Texus                                                                                  |
+| System                                                                                 |
+| Security                                                                               |
+<snip>
+| Application                                                                            |
+<snip>
+| WINDOWS_wmvdecod_CHANNEL                                                               |
+| WINDOWS_WMPHOTO_CHANNEL                                                                |
+<snip>
+| Microsoft-WindowsPhone-Net-Cellcore-CellularAPI/Debug                                  |
+| Microsoft-WindowsPhone-Net-Cellcore-CellManager/Debug                                  |
+| Microsoft-WindowsPhone-LocationServiceProvider/Debug                                   |
+<snip>
+| Intel-SST-CFD-HDA/IntelSST                                                             |
+| Intel-iaLPSS2-I2C/Performance                                                          |
+<snip>
++----------------------------------------------------------------------------------------+
+osquery> 
+
+[PS: For the sake of saving the space, majority of the channel names have been snipped out but you get the idea]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The SQL query constraints provide great flexibility to reduce/parse this list. For e.g. to get all the channels from Microsoft-Windows-Kernel, all that is needed is:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+osquery> select * from win_event_log_channels where source like '%Microsoft-Windows-Kernel%';
++------------------------------------------------------------+
+| source                                                     |
++------------------------------------------------------------+
+| Microsoft-Windows-Kernel-XDV/Analytic                      |
+| Microsoft-Windows-Kernel-WHEA/Operational                  |
+| Microsoft-Windows-Kernel-WHEA/Errors                       |
+| Microsoft-Windows-Kernel-WDI/Operational                   |
+| Microsoft-Windows-Kernel-WDI/Debug                         |
+| Microsoft-Windows-Kernel-WDI/Analytic                      |
+| Microsoft-Windows-Kernel-StoreMgr/Operational              |
+| Microsoft-Windows-Kernel-StoreMgr/Analytic                 |
+| Microsoft-Windows-Kernel-ShimEngine/Operational            |
+| Microsoft-Windows-Kernel-ShimEngine/Diagnostic             |
+| Microsoft-Windows-Kernel-ShimEngine/Debug                  |
+| Microsoft-Windows-Kernel-Registry/Performance              |
+| Microsoft-Windows-Kernel-Registry/Analytic                 |
+| Microsoft-Windows-Kernel-Processor-Power/Diagnostic        |
+| Microsoft-Windows-Kernel-Process/Analytic                  |
+| Microsoft-Windows-Kernel-Prefetch/Diagnostic               |
+| Microsoft-Windows-Kernel-Power/Thermal-Operational         |
+| Microsoft-Windows-Kernel-Power/Thermal-Diagnostic          |
+| Microsoft-Windows-Kernel-Power/Diagnostic                  |
+| Microsoft-Windows-Kernel-PnP/Driver Diagnostic             |
+| Microsoft-Windows-Kernel-PnP/Device Enumeration Diagnostic |
+| Microsoft-Windows-Kernel-PnP/Configuration Diagnostic      |
+| Microsoft-Windows-Kernel-PnP/Configuration                 |
+| Microsoft-Windows-Kernel-PnP/Boot Diagnostic               |
+| Microsoft-Windows-Kernel-Pep/Diagnostic                    |
+| Microsoft-Windows-Kernel-Pdc/Diagnostic                    |
+| Microsoft-Windows-Kernel-Network/Analytic                  |
+| Microsoft-Windows-Kernel-Memory/Analytic                   |
+| Microsoft-Windows-Kernel-LiveDump/Analytic                 |
+| Microsoft-Windows-Kernel-IoTrace/Diagnostic                |
+| Microsoft-Windows-Kernel-IO/Operational                    |
+| Microsoft-Windows-Kernel-Interrupt-Steering/Diagnostic     |
+| Microsoft-Windows-Kernel-File/Analytic                     |
+| Microsoft-Windows-Kernel-EventTracing/Analytic             |
+| Microsoft-Windows-Kernel-EventTracing/Admin                |
+| Microsoft-Windows-Kernel-Disk/Analytic                     |
+| Microsoft-Windows-Kernel-BootDiagnostics/Diagnostic        |
+| Microsoft-Windows-Kernel-Boot/Operational                  |
+| Microsoft-Windows-Kernel-Boot/Analytic                     |
+| Microsoft-Windows-Kernel-ApphelpCache/Operational          |
+| Microsoft-Windows-Kernel-ApphelpCache/Debug                |
+| Microsoft-Windows-Kernel-ApphelpCache/Analytic             |
+| Microsoft-Windows-Kernel-AppCompat/Performance             |
+| Microsoft-Windows-Kernel-AppCompat/General                 |
+| Microsoft-Windows-Kernel-Acpi/Diagnostic                   |
++------------------------------------------------------------+
+osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The next table can be used to get the data in each channel. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_event_log_data;
+E0514 13:33:07.384126 65388 plgx_win_evt_log_data_table.cpp:41] Provide 'source' as input in query. Use 'win_event_log_channels' table for help.
+osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The channel is a mandatory field and can be obtained from the output of the first table. So if we had to get the event logs from "Windows PowerShell", this is all it would take:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_event_log_data where source="Windows PowerShell" limit 5;
++------------+--------------------------------+--------------------+---------------+---------------+---------+------+-------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| time       | datetime                       | source             | provider_name | provider_guid | eventid | task | level | keywords | data                                                                                                                                                                                                                                                                                                                                                                                                                         |
++------------+--------------------------------+--------------------+---------------+---------------+---------+------+-------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 1589437351 | 2019-08-20T16:08:54.567261300Z | Windows PowerShell | PowerShell    |               | 600     | 6    | 4     | -1       | {"EventData":{"Data":"Registry,Started,\tProviderName=Registry\r\n\tNewProviderState=Started\r\n\r\n\tSequenceNumber=1\r\n\r\n\tHostName=ConsoleHost\r\n\tHostVersion=5.1.18362.145\r\n\tHostId=728ee7fd-8280-4028-855a-d82025d6721d\r\n\tHostApplication=powershell\r\n\tEngineVersion=\r\n\tRunspaceId=\r\n\tPipelineId=\r\n\tCommandName=\r\n\tCommandType=\r\n\tScriptName=\r\n\tCommandPath=\r\n\tCommandLine="}}       |
+| 1589437351 | 2019-08-20T16:08:54.681615900Z | Windows PowerShell | PowerShell    |               | 600     | 6    | 4     | -1       | {"EventData":{"Data":"Alias,Started,\tProviderName=Alias\r\n\tNewProviderState=Started\r\n\r\n\tSequenceNumber=3\r\n\r\n\tHostName=ConsoleHost\r\n\tHostVersion=5.1.18362.145\r\n\tHostId=728ee7fd-8280-4028-855a-d82025d6721d\r\n\tHostApplication=powershell\r\n\tEngineVersion=\r\n\tRunspaceId=\r\n\tPipelineId=\r\n\tCommandName=\r\n\tCommandType=\r\n\tScriptName=\r\n\tCommandPath=\r\n\tCommandLine="}}             |
+| 1589437351 | 2019-08-20T16:08:54.681615900Z | Windows PowerShell | PowerShell    |               | 600     | 6    | 4     | -1       | {"EventData":{"Data":"Environment,Started,\tProviderName=Environment\r\n\tNewProviderState=Started\r\n\r\n\tSequenceNumber=5\r\n\r\n\tHostName=ConsoleHost\r\n\tHostVersion=5.1.18362.145\r\n\tHostId=728ee7fd-8280-4028-855a-d82025d6721d\r\n\tHostApplication=powershell\r\n\tEngineVersion=\r\n\tRunspaceId=\r\n\tPipelineId=\r\n\tCommandName=\r\n\tCommandType=\r\n\tScriptName=\r\n\tCommandPath=\r\n\tCommandLine="}} |
+| 1589437351 | 2019-08-20T16:08:54.702975600Z | Windows PowerShell | PowerShell    |               | 600     | 6    | 4     | -1       | {"EventData":{"Data":"FileSystem,Started,\tProviderName=FileSystem\r\n\tNewProviderState=Started\r\n\r\n\tSequenceNumber=7\r\n\r\n\tHostName=ConsoleHost\r\n\tHostVersion=5.1.18362.145\r\n\tHostId=728ee7fd-8280-4028-855a-d82025d6721d\r\n\tHostApplication=powershell\r\n\tEngineVersion=\r\n\tRunspaceId=\r\n\tPipelineId=\r\n\tCommandName=\r\n\tCommandType=\r\n\tScriptName=\r\n\tCommandPath=\r\n\tCommandLine="}}   |
+| 1589437351 | 2019-08-20T16:08:54.702975600Z | Windows PowerShell | PowerShell    |               | 600     | 6    | 4     | -1       | {"EventData":{"Data":"Function,Started,\tProviderName=Function\r\n\tNewProviderState=Started\r\n\r\n\tSequenceNumber=9\r\n\r\n\tHostName=ConsoleHost\r\n\tHostVersion=5.1.18362.145\r\n\tHostId=728ee7fd-8280-4028-855a-d82025d6721d\r\n\tHostApplication=powershell\r\n\tEngineVersion=\r\n\tRunspaceId=\r\n\tPipelineId=\r\n\tCommandName=\r\n\tCommandType=\r\n\tScriptName=\r\n\tCommandPath=\r\n\tCommandLine="}}       |
++------------+--------------------------------+--------------------+---------------+---------------+---------+------+-------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Similar queries can be created to collect log data from any channel.
+
+
+8 Extension SDK
+----------------
 
 With the release 1.0.23.3, we have introduced an experimental SDK that allows
 the extension to be used as a bridge between an endpoint application and
 osquery. For more details, check
 [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-8 FAQ
+9 FAQ
 -----
 
 1.  What is extension version?
 
-It is 1.0.35.15. It is digitally signed by PolyLogyx.
+It is 1.0.40.1. It is digitally signed by PolyLogyx.
 
 2.  What osquery version to use?
 

@@ -1,0 +1,16 @@
+TableColumns columns() const
+{
+        return{
+            std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("datetime", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("source", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("provider_name", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("provider_guid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("eventid", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("task", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("level", INTEGER_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("keywords", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("data", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("eid", TEXT_TYPE, ColumnOptions::HIDDEN),
+        };
+}
