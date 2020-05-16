@@ -516,7 +516,7 @@ E0514 13:33:07.384126 65388 plgx_win_evt_log_data_table.cpp:41] Provide 'source'
 osquery>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The channel is a mandatory field and can be obtained from the output of the first table. So if we had to get all the event logs from "Windows PowerShell", this is all it would take:
+The channel is a mandatory field and can be obtained from the output of the first table. So if we had to get the event logs from "Windows PowerShell", this is all it would take:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery> select * from win_event_log_data where source="Windows PowerShell" limit 5;
@@ -534,7 +534,8 @@ osquery>
 
 Similar queries can be created to collect log data from any channel.
 
-8. Extension SDK
+
+8 Extension SDK
 ----------------
 
 With the release 1.0.23.3, we have introduced an experimental SDK that allows
@@ -542,7 +543,7 @@ the extension to be used as a bridge between an endpoint application and
 osquery. For more details, check
 [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-8 FAQ
+9 FAQ
 -----
 
 1.  What is extension version?
