@@ -206,7 +206,7 @@ where the **matches** column determines if any of the signature in the yara file
 
 With the build 1.0.34.14, three new columns have been added in win_yara_events table and they are md5, time, utc_time. This is to improve tracing the events with yara matches.
 
-With the build 1.0.40.1, follow yara [externals](https://yara.readthedocs.io/en/v3.4.0/writingrules.html#external-variables) are supported in the rule syntax.
+With the build 1.0.40.1, following yara [externals](https://yara.readthedocs.io/en/v3.4.0/writingrules.html#external-variables) are supported in the rule syntax.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 +---------------------------------------------------+---------------------------------------------------+
@@ -412,12 +412,14 @@ The based osquery tool provided an event driven approach to collect data from Wi
 
 With the release 1.0.40.1, two new tables have been provided in the extension. These tables will allow for querying, and collecting, of data from Windows Event Log. These tables are:
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery> .tables
 <snip>
   => win_event_log_channels
   => win_event_log_data
 </snip>
 osquery>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Querying the first of these tables, win_event_log_channels, will result in answering all the log channels available in the system. Querying the second table will provide the data in a given channel.
 
