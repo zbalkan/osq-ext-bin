@@ -1,0 +1,10 @@
+TableColumns columns() const override
+{
+	return{
+		std::make_tuple("target_path", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+		std::make_tuple("matches", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+		std::make_tuple("count", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
+		std::make_tuple("sig_group", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+		std::make_tuple("sigfile", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+	};
+}

@@ -1,7 +1,7 @@
 TableColumns columns() const
 {
       return{
-           std::make_tuple("acton", TEXT_TYPE, ColumnOptions::DEFAULT),
+           std::make_tuple("action", TEXT_TYPE, ColumnOptions::DEFAULT),
            std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
            std::make_tuple("target_path", TEXT_TYPE, ColumnOptions::DEFAULT),
            std::make_tuple("md5", TEXT_TYPE, ColumnOptions::DEFAULT),
@@ -16,4 +16,3 @@ TableColumns columns() const
            std::make_tuple("process_name", TEXT_TYPE, ColumnOptions::DEFAULT),
        };
 }
-

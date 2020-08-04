@@ -8,4 +8,3 @@ TableColumns columns() const
             std::make_tuple("access_mask", BIGINT_TYPE, ColumnOptions::DEFAULT),
         };
 }
-
