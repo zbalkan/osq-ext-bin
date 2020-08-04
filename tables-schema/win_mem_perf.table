@@ -11,4 +11,3 @@ TableColumns columns() const
             std::make_tuple("available_extended_memory", BIGINT_TYPE, ColumnOptions::DEFAULT),
        };
 }
-

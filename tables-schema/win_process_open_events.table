@@ -10,10 +10,9 @@ TableColumns columns() const override
            std::make_tuple("src_path", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
            std::make_tuple("target_path", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
            std::make_tuple("granted_access", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+           std::make_tuple("granted_access_value", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
            std::make_tuple("owner_uid", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
            std::make_tuple("time", osquery::BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
            std::make_tuple("utc_time", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
         };
 }
-
-
