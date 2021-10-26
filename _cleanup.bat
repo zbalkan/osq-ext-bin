@@ -31,14 +31,21 @@ REM Clean up the extension db
 rmdir /S /Q c:\ProgramData\plgx_win_extension >nul 2>&1
 
 REM Clean up the drivers
-fltmc unload vast >nul 2>&1
+sc stop vast >nul 2>&1
 sc delete vast >nul 2>&1
-del /F /Q /S C:\Windows\System32\drivers\vast.sys >nul 2>&1
+del /F /Q /S %systemroot%\System32\drivers\vast.sys >nul 2>&1
 sc stop vastnw >nul 2>&1
 sc delete vastnw >nul 2>&1
-del /F /Q /S C:\Windows\System32\drivers\vastnw.sys >nul 2>&1
-del /F /Q /S C:\ProgramData\osquery\vastnw.sys >nul 2>&1
+del /F /Q /S %systemroot%\System32\drivers\vastnw.sys >nul 2>&1
 
 REM clean up the extension binary
-del /F /Q /S C:\ProgramData\osquery\plgx_win_extension.ext.exe >nul 2>&1
+
+IF EXIST "%ProgramFiles%\osquery\plgx_win_extension.ext.exe" (
+del /F /Q /S "%ProgramFiles%\osquery\plgx_win_extension.ext.exe" >nul 2>&1
+)
+
+IF EXIST "%ProgramData%\osquery\plgx_win_extension.ext.exe" (
+del /F /Q /S "%ProgramData%\osquery\plgx_win_extension.ext.exe" >nul 2>&1
+)
+
 echo "Clean up done."

@@ -127,7 +127,7 @@ function Test-IsAdmin {
 }
   
 function Main {
-    Write-Host -ForegroundColor YELLOW  "============ Polylogyx Helper Script to upgrade extension. ============"
+    Write-Host -ForegroundColor YELLOW  "============ EclecticIQ Helper Script to upgrade extension. ============"
 
     Write-Host "[+] Verifying script is running with Admin privileges" -foregroundcolor Yellow
     if (-not (Test-IsAdmin)) {

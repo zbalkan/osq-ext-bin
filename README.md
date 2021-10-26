@@ -1,6 +1,6 @@
-﻿## 1. PolyLogyx osquery Extension for Windows
+﻿## 1. EclecticIQ osquery Extension for Windows
 
-PolyLogyx OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of PolyLogyx. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 1.0.40.5 (md5: eac436b0088acc1daf577f5666755fb9)
+EclecticIQ OSQuery Extension (plgx_win_extension.ext.exe) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.0.0.0 (md5: 3af2fdffb907da582c2cb3eb2b67d75d)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -14,8 +14,8 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 7) Socket (listen, accept, connect and close) events
 8) DNS request and response events
 9) A way to track all the executables that get loaded in memory and their certificate
-10) An embedded YARA engine to scan files with YARA rules
-11) Open Handles in a Process.
+10) An embedded YARA engine to scan files and processes with YARA rules
+11) Open Handles in a Process
 12) Ability to query the current status of security products installed on the system
 13) Integration with an intelligent PowerShell script to analyze PowerShell script logs
 14) Ability to track Registry Events in real time
@@ -28,8 +28,10 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 21) Ability to generate the memory dumps of such processes
 22) Visibility into TLS/SSL traffic
 23) Ability to grab Windows Event Logs
+24) AMSI scan for malware in files
+25) Blocking for file operations, registry operations, and process creation/termination
 
-This additional state of the Windows endpoint is exported by means of following additional tables created by the PolyLogyx Extension
+This additional state of the Windows endpoint is exported by means of following additional tables created by the EclecticIQ Extension
 
 - win_dns_events
 - win_dns_response_events 
@@ -63,11 +65,11 @@ The detailed schema for these [tables](https://github.com/polylogyx/osq-ext-bin/
 
 ## 2 Applying Filters
 
-By default, PolyLogyx client is designed to capture the system events in real time over a wide variety of system activities and make that telemetry available via the flexible SQL syntax of osquery. Given the most of the system activity may be benign, and can cause additional burden of skimming thru a larger volume of data while searching for incidents of interest, we provide a way of filtering the events on most tables.
+By default, EclecticIQ client is designed to capture the system events in real time over a wide variety of system activities and make that telemetry available via the flexible SQL syntax of osquery. Given the most of the system activity may be benign, and can cause additional burden of skimming thru a larger volume of data while searching for incidents of interest, we provide a way of filtering the events on most tables.
 
 # 2.1 Types of Filters
 
-Using filters, you can configure the PolyLogyx client to capture only data relevant to you. You can choose to include relevant data and exclude non-meaningful data. In effect you can define these type of filters:
+Using filters, you can configure the EclecticIQ client to capture only data relevant to you. You can choose to include relevant data and exclude non-meaningful data. In effect you can define these type of filters:
 - Include filters to receive information about events matching the specified filtering criteria.
 - Exclude filters to ignore information about events matching the specified filtering criteria.
 
@@ -135,7 +137,7 @@ Event filters are supported on following tables and columns:
 | Table Name                                                  | Column Names                                      |
 |-------------------------------------------------------------|---------------------------------------------------|
 | win_process_events                                          | cmdline, path, parent_path                        |
-| win_registry_events                                         | target_name, action                               |
+| win_registry_events                                         | target_name, action, process_name                 |
 | win_socket_events                                           | process_name, remote_port, remote_address         |
 | win_file_events                                             | target_path, process_name                         |
 | win_remote_thread_events                                    | module_name, function_name, src_path, target_path |
@@ -160,7 +162,7 @@ configurations can be created.
 3 YARA Matching on file events
 ------------------------------
 
-The extension can be configure to match file events with yara rules. The syntax for configuring yara follows the same 
+The extension can be configured to match file events with yara rules. The syntax for configuring yara follows the same 
 syntax as in the [osquery](https://osquery.readthedocs.io/en/stable/deployment/yara/). For the current release, only 
 the evented version of yara table (win_yara_events) is supported. A sample config would look like following:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,7 +192,7 @@ the evented version of yara table (win_yara_events) is supported. A sample confi
 The above config will match yara signatures belonging to **yara_test_group1** to any file created or modified under the folder **C:\Users\Admin\Downloads**
 and **yara_test_group2** to files created or modifed under the folder **C:\Users\Default**
 
-The sample out of the win_yara_events table would look something like:
+The sample output of the win_yara_events table would look something like:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery> select * from win_yara_events;
@@ -267,7 +269,7 @@ entries that matched the particular pattern.
 
 In the [test-tools](https://github.com/polylogyx/osq-ext-bin/tree/master/test-tools) folder, a batch file is provided that writes arbitrary data
 to files at location c:\temp\tail.txt & c:\temp\tail2.txt. When the batch file is invoked with osquery
-and PolyLogyx Extension running in the background, the changes to the files can
+and EclecticIQ Extension running in the background, the changes to the files can
 be retrieved via the queries to win_logger_events as follows:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -356,7 +358,7 @@ osquery> select * from file where directory="C:\ProgramData\plgx_win_extension\s
 With the version 1.0.30.10, we have introduced a table that captures the SSL/TLS credentials for every TLS connection from the agent.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-osquery> osquery> osquery> .schema win_ssl_events
+osquery> .schema win_ssl_events
 CREATE TABLE win_ssl_events(`event_type` TEXT, `action` TEXT, `eid` TEXT, `subject_name` TEXT, `issuer_name` TEXT, `serial_number` TEXT, `dns_names` TEXT, `ja3_md5` TEXT, `ja3s_md5` TEXT, `pid` BIGINT, `process_guid` TEXT, `process_name` TEXT, `remote_address` TEXT, `remote_port` INTEGER, `time` BIGINT, `utc_time` TEXT);
 osquery>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -543,12 +545,296 @@ the extension to be used as a bridge between an endpoint application and
 osquery. For more details, check
 [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-9 FAQ
------
+9 YARA Matching on process events
+----------------------------------
+
+The extension can be configured to match process events with yara rules. For the current release, only 
+the evented version of yara table (win_yara_events) is supported. A sample config would look like following:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"yara": {
+    "signatures": {
+      "eicar_test_group": [
+        "C:\\Program Files\\osquery\\yara\\eicar.yara"
+      ]
+    },
+   "process_paths": {
+      "test_files": [ "eicar_test_group" ]
+    },
+  "process_paths": {
+    "test_files": [ "C:\\mal_prog.exe" ]
+  },
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The above config will match yara signatures belonging to **eicar_test_group** to the process launched as **C:\mal_prog.exe**
+
+The sample output of the win_yara_events table would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_yara_events;
++-----------------+----------------------------------+------------+--------------------------+------------+-------------+----------------------+-------+--------------------------------------+ 
+| target_path     | md5                              | time       | utc_time                 | category   | action      | matches              | count | eid                                  | 
++-----------------+----------------------------------+------------+--------------------------+------------+-------------+----------------------+-------+--------------------------------------+ 
+| C:\mal_prog.exe | a70c1a6c351dea389ff7c8945cc2f782 | 1632919109 | Wed Sep 29 12:38:29 2021 | test_files | PROC_CREATE | eicar_substring_test | 1     | 09352BC7-20FB-11EC-B6AA-B5B920D119A3 | 
++-----------------+----------------------------------+------------+--------------------------+------------+-------------+----------------------+-------+--------------------------------------+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+where the **matches** column determines if any of the signature in the yara file matched with the in-memory data of the target process and **count** gives the count of rules that matched. 
+For a process event to be considered for matching against the yara signatures, it should also satisfy the process filters criteria.
+
+
+A custom flag called **custom_plgx_EnableYaraProcessScan** needs to be set to true via the osquery options.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_EnableYaraProcessScan": "true"
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+10 AMSI Scan for malware in files
+---------------------------------
+
+The extension can be configured to do AMSI Scan for malware on files. 
+For any file write operation anywhere in the file, the file content from beginning upto maximum 70 bytes will be scanned using AmsiScanBuffer() API. 
+If the content is found to be malware, win_file_events will report the file as malware and its byte stream in base64 encoded format.
+   
+The sample output of the win_file_events table would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_file_events;
+
++------------+--------------------------------------+-----------------+----------------------------------+------------------------------------------------------------------+--------+------------------------+------------+------------------------------+---------+------+--------------------------------------+---------------------------------+-----------------+--------------------------------------------------------------------------------------------------+ 
+| action     | eid                                  | target_path     | md5                              | sha256                                                           | hashed | uid                    | time       | utc_time                     | pe_file | pid  | process_guid                         | process_name                    | amsi_is_malware | byte_stream                                                                                      | 
++------------+--------------------------------------+-----------------+----------------------------------+------------------------------------------------------------------+--------+------------------------+------------+------------------------------+---------+------+--------------------------------------+---------------------------------+-----------------+--------------------------------------------------------------------------------------------------+ 
+| FILE_WRITE | 3B0683F4-F5A6-4A11-B7ED-E56C00000000 | C:\malware.txt  | e7e5fa40569514ec442bbdf755d89c2f | 8b3f191819931d1f2cef7289239b5f77c00b079847b9c2636e56854d1e5eff71 | 1      | BUILTIN\Administrators | 1632919298 | Wed Sep 29 12:41:38 2021 UTC | NO      | 7636 | 09352BD7-20FB-11EC-B6AA-B5B920D119A3 | C:\Windows\System32\notepad.exe | YES             | WDVPIVAlQEFQWzRcUFpYNTQoUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVElWSVJVUy1URVNULUZJTEUhJEgrSCoNCg== | 
++------------+--------------------------------------+-----------------+----------------------------------+------------------------------------------------------------------+--------+------------------------+------------+------------------------------+---------+------+--------------------------------------+---------------------------------+-----------------+--------------------------------------------------------------------------------------------------+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+where the **amsi_is_malware** column determines if the file is a malware and **byte_stream** gives the base64 encoded file data scanned as malware. 
+For a file event to be considered for AMSI scan, it should also satisfy the file filters criteria.
+
+
+A custom flag called **custom_plgx_EnableAmsiStreamEventData** needs to be set to true via the osquery options.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_EnableAmsiStreamEventData": "true"
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+11 Blocking for file operations, registry operations, and process creation/termination
+---------------------------------------------------------------------------------------
+
+11.1 Description
+================
+Using blocking rules, you can configure agent to block actions, or operations, or events from taking place on a system. These operations are: 
+
+- File Operations 
+- Registry Operations 
+- Process Launch  
+- Process Termination 
+
+You can define multiple rule groups. Each rule group can have a combination of ALLOW and/or BLOCK rule sub groups. 
+Each rule group should be mandatorily named as “RuleGroupn” where n is the number indicating its position in array of Rule Groups.
+Each ALLOW and BLOCK sub group can have multiple conditions. If there are multiple ALLOW or BLOCK rules, all of them needs to be satisfied (a logical AND condition) within ALLOW or BLOCK sub group during matching at run time. 
+Rules in ALLOW sub group is an exception to rules defined in BLOCK sub group. 
+
+The above operations (before actual operation happens on the system) are matched against all configured rule groups, at the time of t. 
+If any rule group decides to BLOCK an operation, that rule group is considered winner and operation is blocked regardless of the decision (ALLOW/BLOCK) taken by the other rule groups. If none of the rule groups decides to BLOCK, the operation is allowed. 
+In other words ‘BLOCK’ takes precedence. 
+
+Providing a blob or ALLOW or BLOCK in a rule group is not mandatory. In the absence of any blob in a rule group, or a rule group, the operation is always allowed. 
+Blocking rules are not applicable to actions done by EclecticIQ agent process, which implies that it can perform all operations regardless of blocking rules configuration. However actions done on EclecticIQ Agent process can be blocked using these rules (e.g Agent protection from termination) 
+
+Wild cards (* and ?) are supported(same as filters) for defining rules. 
+
+11.2 Blocking Rules configuration 
+=================================
+
+Block/Allow Rules can be defined based on following parameters – 
+
+1. Process Launch
+	- Process Name 
+	- Parent process Name 
+	- Command Line (with which process was launched) 
+
+2. Process Termination
+	- Process Name 
+
+3. File Operations
+	- Process Name
+	- Target File Name 
+
+4. Registry Operations
+	- Registry Key Name
+	- Process Name 
+
+Example configuration for blocking rules  – 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+"plgx_event_control": { 
+    "win_proc_events": { 
+      "RuleGroup1": { 
+        "allow": {}, 
+        "block": { 
+          "cmdline": { 
+            "values": [ 
+              "*cmd.exe" 
+            ] 
+          }, 
+          "parent_process": { 
+            "values": [ 
+              "*services.exe" 
+            ] 
+          } 
+        } 
+      } 
+    }, 
+    "win_file_events": { 
+      "RuleGroup1": { 
+        "allow": { 
+          "process": { 
+            "values": [ 
+              	"*osquery*", 
+		"*plgx_win_extension.ext.exe"	
+            ] 
+          }, 
+          "target_path": { 
+            "values": [ 
+              "*\\program files\\osquery\\*"
+            ] 
+          } 
+        }, 
+        "block": { 
+          "target_path": { 
+            "values": [ 
+              "*\\program files\\osquery\\*" 
+            ] 
+          } 
+        } 
+      } 
+    }, 
+    "win_registry_events": { 
+      "RuleGroup1": { 
+        "block": { 
+          "key_name": { 
+            "values": [ 
+              "*microsoft*" 
+            ] 
+          } 
+        } 
+      }, 
+      "RuleGroup2": { 
+        "block": { 
+          "key_name": { 
+            "values": [ 
+              "*google*" 
+            ] 
+          } 
+        } 
+      } 
+    } 
+  }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In the above JSON, the first rule blob is describing a blocking rule for “process events” on the Windows system.  
+
+The blob has 1 rule group and 2 rules in “block” sub group (cmdline contains “cmd.exe” and parent process name contains “services.exe”). 
+For this rule group to BLOCK process launch, both block rules need to be satisfied. There is no exception to block rules as “allow” sub group is empty. 
+
+The second rule blob is describing a blocking rule for “file events” on the Windows system.  
+
+The blob has 1 rule group and 1 rule in “block” sub group (target file name path contains “\\program files\\osquery\\”). 
+For this rule group to BLOCK file modifications for the target path, this rule needs to be satisfied. 
+There are 2 exceptions to the BLOCK rule as defined in “allow” sub group – process name contain "osquery", “plgx_win_extension.ext.exe” and target file name path contains “\\program files\\osquery\\”. 
+
+The third rule blob is describing a blocking rule for “registry events” on the Windows system.  
+
+The blob has 2 rule groups. First rule group has 1 rule in “block” sub group (target registry key name contains “microsoft”). 
+For this rule group to BLOCK registry modifications for the target key, this rule needs to be satisfied. There are no exceptions to the BLOCK rule as “allow” sub group is empty. 
+
+Second rule group has 1 rule in “block” sub group (target registry key name contains “google”). 
+For this rule group to BLOCK registry modifications for the target key, this rule needs to be satisfied. There are no exceptions to the BLOCK rule as “allow” sub group is empty. 
+
+If either of the 2 rule groups decide to BLOCK, the registry operation is BLOCKED. 
+
+The sample output of the win_event_log_data table for file blocking events would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery>select * from win_event_log_data where source='Application' and provider_name='plgx_win_extension' and data like '%Blocked%'; 
+
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| time       | datetime                     | source      | provider_name      | provider_guid | eventid | task | level | keywords | data                                                                                                                                                                                | 
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| 1632918664 | 2021-09-29T12:30:53.8999620Z | Application | plgx_win_extension |               | 0       | 0    | 2     | -1       | {"EventData":{"Data":"plgx_win_extension,{\"action\":\"Blocked\",\"process_name\":\"C:\\\\Windows\\\\System32\\\\cmd.exe\",\"target_path\":\"C:\\\\foo.txt\",\"type\":\"FILE\"}"}} | 
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sample output of the win_event_log_data table for process blocking events would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery>select * from win_event_log_data where source='Application' and provider_name='plgx_win_extension' and data like '%Blocked%'; 
+
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| time       | datetime                     | source      | provider_name      | provider_guid | eventid | task | level | keywords | data                                                                                                                                                                                                                           | 
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| 1632918954 | 2021-09-29T12:35:23.9327698Z | Application | plgx_win_extension |               | 0       | 0    | 2     | -1       | {"EventData":{"Data":"plgx_win_extension,{\"action\":\"Blocked\",\"cmdline\":\"calc\",\"parent_path\":\"C:\\\\Windows\\\\System32\\\\cmd.exe\",\"path\":\"C:\\\\Windows\\\\System32\\\\calc.exe\",\"type\":\"PROC_CREATE\"}"}} | 
+| 1632918954 | 2021-09-29T12:35:23.9347704Z | Application | plgx_win_extension |               | 0       | 0    | 2     | -1       | {"EventData":{"Data":"plgx_win_extension,{\"action\":\"Blocked\",\"path\":\"C:\\\\Windows\\\\System32\\\\calc.exe\",\"type\":\"PROC_TERMINATE\"}"}}                                                                            | 
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sample output of the win_event_log_data table for registry blocking events would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery>select * from win_event_log_data where source='Application' and provider_name='plgx_win_extension' and data like '%Blocked%'; 
+
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| time       | datetime                     | source      | provider_name      | provider_guid | eventid | task | level | keywords | data                                                                                                                                                                                                                    | 
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| 1632990507 | 2021-09-30T08:28:14.3120582Z | Application | plgx_win_extension |               | 0       | 0    | 2     | -1       | {"EventData":{"Data":"plgx_win_extension,{\"action\":\"Blocked\",\"process_name\":\"C:\\\\Windows\\\\System32\\\\reg.exe\",\"target_name\":\"\\\\REGISTRY\\\\MACHINE\\\\SOFTWARE\\\\mal_key\",\"type\":\"REGISTRY\"}"}} | 
++------------+------------------------------+-------------+--------------------+---------------+---------+------+-------+----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+A custom flag called **custom_plgx_EnableBlocking** needs to be set to true via the osquery options.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_EnableBlocking": "true"
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+12 Switch to enable or disable network packet processing for SSL, DNS, HTTP events
+----------------------------------------------------------------------------------
+
+By default, network packets processing is disabled. Hence, SSL, DNS, HTTP events won't be generated. 
+ 
+To enable network packets processing, a custom flag called **custom_plgx_EnablePacketInspection** needs to be set to true via the osquery options.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_EnablePacketInspection": "true"
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+In order to disable network packets processing again after enabling, reset "custom_plgx_EnablePacketInspection" to "false" and restart the services in order:
+
+- sc stop osqueryd
+- sc stop vast
+- sc stop vastnw
+- sc start osqueryd
+  
+
+13 FAQ
+------
 
 1.  What is extension version?
 
-It is 1.0.40.3. It is digitally signed by PolyLogyx.
+It is 3.0.0.0. It is digitally signed by EclecticIQ.
 
 2.  What osquery version to use?
 
@@ -609,16 +895,17 @@ You get to keep both the pieces. Isn't that great?
 11. Do you also have fleet manager that provides out-of-box support for these
 tables and deployment of extension?
 
-Yes, we do. Feel welcome to contact us at info\@polylogyx.com
+Yes, we do. Feel welcome to contact us at support\@eclecticiq.com
 
 12. I want to report an issue.
 
-You can log it here, mail to open\@polylogyx.com or find us on [osquery
+You can log it here, mail to support\@eclecticiq.com or find us on [osquery
 slack](https://osquery.slack.com/) at channel \# polylogyx-extension
 
 13. The default config provided here seems to be collecting event only via a handful of tables. What's the story there?
 
-Endpoint telemetry, especically from Windows systems, can be overwhelming despite all the filters and white noise suppression. The default config here, therefore, is designed to primarily collect 2 kinds of events i.e. Process Start and Network. This is inspired by the recommendations in this [blog](https://www.redcanary.com/blog/carbon-black-response-splunk-integration) from a famous MDR organization. Nevertheless, you are welcome to tune it to your needs. That's the beauty of osquery i.e. all you need to do is simply add more queries.
+Endpoint telemetry, especically from Windows systems, can be overwhelming despite all the filters and white noise suppression. 
+The default config here, therefore, is designed to primarily collect 2 kinds of events i.e. Process Start and Network. This is inspired by the recommendations in this [blog](https://www.redcanary.com/blog/carbon-black-response-splunk-integration) from a famous MDR organization. Nevertheless, you are welcome to tune it to your needs. That's the beauty of osquery i.e. all you need to do is simply add more queries.
 
 14. What kind of performance penalities are introduced by the extension?
 
@@ -626,6 +913,8 @@ The extension is a silent monitoring tool and barely takes any system resources.
 
 15. Any known issues?
 
-There is a small race between application of filters and the event
-collection, so for a short windows events that are supposed to be fitered
-get captured.
+There is a small race between application of filters and the event collection, so for a short duration, windows events that are supposed to be fitered get captured.
+
+16. Where can I see the logs from extension?
+
+By default, extension logs are written to %ProgramFiles%\plgx_osquery\plgx-win-extension.log
