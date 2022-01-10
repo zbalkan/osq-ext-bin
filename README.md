@@ -1,6 +1,6 @@
 ﻿## 1. EclecticIQ osquery Extension for Windows
 
-EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.0.1.0 (md5: 96e8aaac4796854823cdeff8f06e77b3)
+EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.0.1.0 (md5: 1b419016a65bca4ff0c05852219871ae)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -46,6 +46,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_logger_events
 - win_msr
 - win_mem_perf
+- win_network_stats
 - win_pefile_events 
 - win_process_events 
 - win_process_handles
@@ -813,32 +814,89 @@ A custom flag called **custom_plgx_EnableBlocking** needs to be set to true via 
 
 By default, network packets processing is disabled. Hence, SSL, DNS, HTTP events won't be generated. 
  
-To enable network packets processing, a custom flag called **custom_plgx_EnablePacketInspection** needs to be set to true via the osquery options.
+To enable network packets processing, following custom flags need to be set to true via the osquery options.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "options" :
 {
-   "custom_plgx_EnablePacketInspection": "true"
+   "custom_plgx_EnableHttp": "true",
+   "custom_plgx_EnableDns": "true",
+   "custom_plgx_EnableSSL": "true"
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-In order to disable network packets processing again after enabling, reset "custom_plgx_EnablePacketInspection" to "false" and restart the services in order:
+In order to disable SSL, DNS, HTTP events again after enabling, reset the desired option to "false" and restart the services in order:
 
 - sc stop osqueryd
 - sc stop vast
 - sc stop vastnw
 - sc start osqueryd
   
+13 Switch to enable or disable shallow SSL events
+----------------------------------------------------------------------------------
 
-13 FAQ
+Shallow SSL events are trimmed down SSL events with no certificate information.
+ 
+To enable shallow SSL events, following custom flags need to be set accordingly via the osquery options.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_EnableSSL": "false",
+   "custom_plgx_EnableShallowSSL": "true"   
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If both custom_plgx_EnableSSL and custom_plgx_EnableShallowSSL are set to "true", custom_plgx_EnableSSL will take precendence over custom_plgx_EnableShallowSSL.
+
+14 Network statistics table
+----------------------------------------------------------------------------------
+
+A new table win_network_stats is introduced to dump snapshot of network activity at a point of time
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_network_stats;
++------------+------------------------+-------------------+-----------------------------------------+-------------+-----------------------------------------+------------+----------------+----------------+
+| process_id | tcp_connection_state   | mac_address       | remote_ip_address                       | remote_port | local_ip_address                        | local_port | incoming_bytes | outgoing_bytes |
++------------+------------------------+-------------------+-----------------------------------------+-------------+-----------------------------------------+------------+----------------+----------------+
+| 4          | LISTEN                 | 60-45-BD-72-FC-D1 | 1.2.3.4                                 | 0           | 10.0.0.20                               | 139        | 0              | 0              |
+| 1128       | CONNECTION ESTABLISHED | 60-45-BD-72-FC-D1 | 100.200.100.200                         | 25625       | 10.0.0.20                               | 3389       | 667904         | 14458963       |
+| 0          | TIME-WAIT              | 60-45-BD-72-FC-D1 | 10.20.30.40                             | 80          | 10.0.0.20                               | 54907      | 0              | 0              |
++------------+------------------------+-------------------+-----------------------------------------+-------------+-----------------------------------------+------------+----------------+----------------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+14 File events on network paths
+----------------------------------------------------------------------------------
+
+win_file_events table has been enhanced to show file events on network shares and mounted drives
+
+osquery>select * from win_file_events;
++-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
+| action      | eid                                  | target_path                                                                                     | md5 | sha256 | hashed | uid     | time       | utc_time                     | pe_file | pid  | process_guid                         | process_name            | amsi_is_malware | byte_stream |
++-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
+| FILE_RENAME | 20B1E186-350D-491E-BC3A-796500000000 | \10.10.10.10\Users\foo\foo2_malicious.bat [Orig: \10.10.10.10\Users\foo\foo__malicious.bat] |     |        | 0      | Unknown | 1641820913 | Mon Jan 10 13:21:53 2022 UTC | NO      | 6484 | 6EA2D0DF-71CE-11EC-B6C2-6045BD72FCD1 | C:\Windows\explorer.exe |                 |             |
++-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
+
+15 Process events on network paths
+----------------------------------------------------------------------------------
+
+win_process_events table has been enhanced to show process events on network shares and mounted drives
+
+osquery>select * from win_process_events where path like '%foo%';
++----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
+| action         | eid                                  | pid   | process_guid                         | path                                        | cmdline                              | parent_pid | parent_process_guid                  | parent_path             | owner_uid                 | time       | utc_time                     |
++----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
+| PROC_TERMINATE | 3C0F4C5F-1AEF-482A-988B-1D5400000000 | 14880 | 6EA2D25C-71CE-11EC-B6C2-6045BD72FCD1 | \Device\Mup\10.10.10.10\Users\foo\foo.exe | "\\10.10.10.10\Users\foo\foo.exe"  | 6484       | 6EA2D1DA-71CE-11EC-B6C2-6045BD72FCD1 | C:\Windows\explorer.exe | foo-agent\dev-admin | 1641821818 | Mon Jan 10 13:36:58 2022 UTC |
+| PROC_CREATE    | 087F9CBB-60CB-4D4F-B0F1-CE4F00000000 | 14880 | 6EA2D25C-71CE-11EC-B6C2-6045BD72FCD1 | \Device\Mup\10.10.10.10\Users\foo\foo.exe | "\\10.10.10.10\Users\foo\foo.exe"  | 6484       | 6EA2D1DA-71CE-11EC-B6C2-6045BD72FCD1 | C:\Windows\explorer.exe | foo-agent\dev-admin | 1641821816 | Mon Jan 10 13:36:56 2022 UTC |
++----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
+
+16 FAQ
 ------
 
 1.  What is extension version?
 
-It is 3.0.0.0. It is digitally signed by EclecticIQ.
+It is 3.0.1.0. It is digitally signed by EclecticIQ.
 
 2.  What osquery version to use?
 
-It has been built and tested with 3.2.6. It also works with 3.3.0 and 4.0.x
+It has been built and tested with 3.2.6. It also works with recent osquery version 5.1.0.
 
 3.  I have installed osquery using the MSI from osquery website. Now what?
 
@@ -862,7 +920,7 @@ It does.
 No. The extension executable is self sufficient. The kernel component is
 automatically installed/uninstalled with the load and unload of extension.
 There are however situations when osquery doesn't un-install the extension very
-cleanly and the drivers may reamin loaded.
+cleanly and the drivers may remain loaded.
 
 7. Is there a cleanup utility in such a case?
 

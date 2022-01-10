@@ -1,0 +1,13 @@
+TableColumns columns() const
+{
+    return{
+            std::make_tuple("process_id", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("tcp_connection_state", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("remote_ip_address", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("remote_port", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("local_ip_address", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("local_port", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("incoming_bytes", BIGINT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("outgoing_bytes", BIGINT_TYPE, ColumnOptions::DEFAULT),
+        };
+}
