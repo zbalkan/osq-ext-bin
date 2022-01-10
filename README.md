@@ -983,7 +983,7 @@ By default, extension logs are written to %ProgramFiles%\plgx_osquery\plgx-win-e
 
 17. How to put a network path for monitoring in filters?
 
-Start the filter string with "*\". For example, to monitor "target_path" on network for "win_file_events", use:
+Start the filter string with * followed by single slash (\\). For example, to monitor "target_path" on network for "win_file_events", use:
 "*\10.10.10.10\Users\foo\foo2_malicious.bat" as filter string.
 
 Similarly, to monitor "path" on network for "win_process_events", use:
