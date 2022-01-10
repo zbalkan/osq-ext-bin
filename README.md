@@ -867,18 +867,21 @@ osquery> select * from win_network_stats;
 
 win_file_events table has been enhanced to show file events on network shares and mounted drives
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery>select * from win_file_events;
 +-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
 | action      | eid                                  | target_path                                                                                     | md5 | sha256 | hashed | uid     | time       | utc_time                     | pe_file | pid  | process_guid                         | process_name            | amsi_is_malware | byte_stream |
 +-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
 | FILE_RENAME | 20B1E186-350D-491E-BC3A-796500000000 | \10.10.10.10\Users\foo\foo2_malicious.bat [Orig: \10.10.10.10\Users\foo\foo__malicious.bat] |     |        | 0      | Unknown | 1641820913 | Mon Jan 10 13:21:53 2022 UTC | NO      | 6484 | 6EA2D0DF-71CE-11EC-B6C2-6045BD72FCD1 | C:\Windows\explorer.exe |                 |             |
 +-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 15 Process events on network paths
 ----------------------------------------------------------------------------------
 
 win_process_events table has been enhanced to show process events on network shares and mounted drives
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery>select * from win_process_events where path like '%foo%';
 +----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
 | action         | eid                                  | pid   | process_guid                         | path                                        | cmdline                              | parent_pid | parent_process_guid                  | parent_path             | owner_uid                 | time       | utc_time                     |
@@ -886,6 +889,7 @@ osquery>select * from win_process_events where path like '%foo%';
 | PROC_TERMINATE | 3C0F4C5F-1AEF-482A-988B-1D5400000000 | 14880 | 6EA2D25C-71CE-11EC-B6C2-6045BD72FCD1 | \Device\Mup\10.10.10.10\Users\foo\foo.exe | "\\10.10.10.10\Users\foo\foo.exe"  | 6484       | 6EA2D1DA-71CE-11EC-B6C2-6045BD72FCD1 | C:\Windows\explorer.exe | foo-agent\dev-admin | 1641821818 | Mon Jan 10 13:36:58 2022 UTC |
 | PROC_CREATE    | 087F9CBB-60CB-4D4F-B0F1-CE4F00000000 | 14880 | 6EA2D25C-71CE-11EC-B6C2-6045BD72FCD1 | \Device\Mup\10.10.10.10\Users\foo\foo.exe | "\\10.10.10.10\Users\foo\foo.exe"  | 6484       | 6EA2D1DA-71CE-11EC-B6C2-6045BD72FCD1 | C:\Windows\explorer.exe | foo-agent\dev-admin | 1641821816 | Mon Jan 10 13:36:56 2022 UTC |
 +----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 16 FAQ
 ------
@@ -976,3 +980,13 @@ There is a small race between application of filters and the event collection, s
 16. Where can I see the logs from extension?
 
 By default, extension logs are written to %ProgramFiles%\plgx_osquery\plgx-win-extension.log
+
+17. How to put a network path for monitoring in filters?
+
+Start the filter string with "*\". For example, to monitor "target_path" on network for "win_file_events", use:
+"*\10.10.10.10\Users\foo\foo2_malicious.bat" as filter string.
+
+Similarly, to monitor "path" on network for "win_process_events", use:
+"*\10.10.10.10\Users\foo\foo.exe" as filter string.
+
+
