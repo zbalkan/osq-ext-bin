@@ -63,7 +63,7 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_yara_events
 - win_yara
 
-The detailed schema for these [tables](https://github.com/polylogyx/osq-ext-bin/tree/master/tables-schema). is available 
+The detailed schema for these [tables](https://github.com/eclecticiq/osq-ext-bin/tree/master/tables-schema). is available 
 
 ## 2 Applying Filters
 
@@ -898,7 +898,7 @@ osquery>select * from win_process_events where path like '%foo%';
 Windows OS provides more than one method for a file to get deleted. In order to self-delete, malwares like Zero-Access use another trick that would help them evade such monitoring of delete files. 
 This method requires that the DeleteFile member of file's FILE_DISPOSITION_INFORMATION be set to TRUE with SetFileInformationByHandle() API.
 
-The test-tools folder contains filedeletetest.exe which demonstrates this scenario by first creating a file C:\test\mytest.bat and then deleting it via method described above. 
+The test-tools folder contains [filedeletetest] (https://github.com/eclecticiq/osq-ext-bin/tree/master/test-tools/file_delete_test_tool) tool  which demonstrates this scenario by first creating a file C:\test\mytest.bat and then deleting it via method described above. 
 The sample output of the win_file_events table would look something like:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
