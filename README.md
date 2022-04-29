@@ -1,6 +1,6 @@
 ﻿## 1. EclecticIQ osquery Extension for Windows
 
-EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.0.1.0 (md5: 1b419016a65bca4ff0c05852219871ae)
+EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.5.1.0 (md5: TBD)
 
 # 1.1 What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -30,6 +30,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 23) Ability to grab Windows Event Logs
 24) AMSI scan for malware in files
 25) Blocking for file operations, registry operations, and process creation/termination
+26) New in 3.5.1.0: Distinguished events for file delete operation when Delete disposition is set to True 
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the EclecticIQ Extension
 
@@ -891,16 +892,33 @@ osquery>select * from win_process_events where path like '%foo%';
 +----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-16 FAQ
+16 File delete by disposition event 
+-----------------------------------
+
+Windows OS provides more than one method for a file to get deleted. In order to self-delete, malwares like Zero-Access use another trick that would help them evade such monitoring of delete files. 
+This method requires that the DeleteFile member of file's FILE_DISPOSITION_INFORMATION be set to TRUE with SetFileInformationByHandle() API.    
+The sample output of the win_file_events table would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_file_events where action like '%FILE_DELETE_BY_DISP%';
++---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
+| action              | eid                                  | target_path                 | md5 | sha256 | hashed | uid                    | time       | utc_time                 | pe_file | pid  | process_guid                         | process_name                     | amsi_is_malware | byte_stream | eventid |
++---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
+| FILE_DELETE_BY_DISP | 5BFDD450-3238-4AFC-8A64-437F00000000 | C:\test\mytest.bat          |     |        | 0      | BUILTIN\Administrators | 1651056208 | Wed Apr 27 10:43:28 2022 | NO      | 3676 | F7BFEC3E-C60F-11EC-B6E8-6045BDA5C0C0 | C:\test\filedeletetest.exe       |                 |             | 1       |
++---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+17 FAQ
 ------
 
 1.  What is extension version?
 
-It is 3.0.1.0. It is digitally signed by EclecticIQ.
+It is 3.5.1.0. It is digitally signed by EclecticIQ.
 
 2.  What osquery version to use?
 
-It has been built and tested with 3.2.6. It also works with recent osquery version 5.1.0.
+It has been built and tested with 4.7.0. It also works with recent osquery version 5.2.2.
 
 3.  I have installed osquery using the MSI from osquery website. Now what?
 
@@ -922,14 +940,13 @@ It does.
 6. Do we need to install the kernel component seperately?
 
 No. The extension executable is self sufficient. The kernel component is
-automatically installed/uninstalled with the load and unload of extension.
-There are however situations when osquery doesn't un-install the extension very
-cleanly and the drivers may remain loaded.
+automatically installed and started with the load of extension.
+However, the kernel component is not stopped or uninstalled with the unload of extension.
 
 7. Is there a cleanup utility in such a case?
 
-Yes. You can use *\_cleanup.bat.* It would need to be launched from an admin
-console
+Yes. You can use *\_cleanup.bat.* It would need to be launched from an admin console.
+Feel free to edit extension file name or path in _cleanup.bat before running for cleanup.
 
 8. osquery has a lot of tables too. What advantage do the extensions' tables
     provide?
@@ -941,7 +958,7 @@ it, the extension enables osquery to be a single agent for all data
 collection needs from the endpoint i.e. live investigation, real time state
 changes, performance monitoring and log monitoring.
 
-9. How to upgrade from the earlier released extension version (e.g 1.0.22.2)?
+9. How to upgrade from the earlier released extension version (e.g 3.0.1.0)?
 
 The clean way of upgrading would be: *Stop the osquery service. Run the cleanup
 utility. Replace the file plgx_win_extension.ext.exe. Re-start the service.*
@@ -962,7 +979,7 @@ Yes, we do. Feel welcome to contact us at support\@eclecticiq.com
 12. I want to report an issue.
 
 You can log it here, mail to support\@eclecticiq.com or find us on [osquery
-slack](https://osquery.slack.com/) at channel \# polylogyx-extension
+slack](https://osquery.slack.com/) at channel \# eclecticiq-polylogyx-extension
 
 13. The default config provided here seems to be collecting event only via a handful of tables. What's the story there?
 
@@ -988,5 +1005,3 @@ Start the filter string with * followed by single slash (\\). For example, to mo
 
 Similarly, to monitor "path" on network for "win_process_events", use:
 "*\10.10.10.10\Users\foo\foo.exe" as filter string.
-
-
