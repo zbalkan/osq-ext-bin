@@ -1,8 +1,8 @@
-﻿## 1. EclecticIQ osquery Extension for Windows
+﻿# EclecticIQ osquery Extension for Windows
 
 EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.5.1.0 (md5: c2f77264ec13fc90b1acfc5c05218707)
 
-# 1.1 What it does:
+## What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
 
 1) File Integrity Monitoring (FIM)
@@ -30,7 +30,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 23) Ability to grab Windows Event Logs
 24) AMSI scan for malware in files
 25) Blocking for file operations, registry operations, and process creation/termination
-26) New in 3.5.1.0: Distinguished events for file delete operation when Delete disposition is set to True 
+26) **New in 3.5.1.0**: Distinguished events for file delete operation when Delete disposition is set to True 
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the EclecticIQ Extension
 
@@ -65,11 +65,29 @@ This additional state of the Windows endpoint is exported by means of following 
 
 The detailed schema for these [tables](https://github.com/eclecticiq/osq-ext-bin/tree/master/tables-schema). is available 
 
-## 2 Applying Filters
+# File delete by disposition event (v3.5.1.0 onwards)
+
+Windows OS provides more than one method for a file to get deleted. In order to self-delete, malwares like Zero-Access use another trick that would help them evade such monitoring of delete files. 
+This method requires that the DeleteFile member of file's FILE_DISPOSITION_INFORMATION be set to TRUE with SetFileInformationByHandle() API.
+
+The test-tools folder contains [filedeletetest](https://github.com/eclecticiq/osq-ext-bin/tree/master/test-tools/file_delete_test_tool) tool  which demonstrates this scenario by first creating a file C:\test\mytest.bat and then deleting it via method described above. 
+The sample output of the win_file_events table would look something like:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_file_events where action like '%FILE_DELETE_BY_DISP%';
++---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
+| action              | eid                                  | target_path                 | md5 | sha256 | hashed | uid                    | time       | utc_time                 | pe_file | pid  | process_guid                         | process_name                     | amsi_is_malware | byte_stream | eventid |
++---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
+| FILE_DELETE_BY_DISP | 5BFDD450-3238-4AFC-8A64-437F00000000 | C:\test\mytest.bat          |     |        | 0      | BUILTIN\Administrators | 1651056208 | Wed Apr 27 10:43:28 2022 | NO      | 3676 | F7BFEC3E-C60F-11EC-B6E8-6045BDA5C0C0 | C:\test\filedeletetest.exe       |                 |             | 1       |
++---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# Applying Filters
 
 By default, EclecticIQ client is designed to capture the system events in real time over a wide variety of system activities and make that telemetry available via the flexible SQL syntax of osquery. Given the most of the system activity may be benign, and can cause additional burden of skimming thru a larger volume of data while searching for incidents of interest, we provide a way of filtering the events on most tables.
 
-# 2.1 Types of Filters
+## Types of Filters
 
 Using filters, you can configure the EclecticIQ client to capture only data relevant to you. You can choose to include relevant data and exclude non-meaningful data. In effect you can define these type of filters:
 - Include filters to receive information about events matching the specified filtering criteria.
@@ -131,8 +149,7 @@ Here is an example of include filters.
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2.2 Event filtering support
-===========================
+## Event filtering support
 
 Event filters are supported on following tables and columns:
 
@@ -150,8 +167,7 @@ Event filters are supported on following tables and columns:
 | win_image_load_process_map                                  | image_path                                        |
 | win_ssl_events                                              | process_name                                      |
 
-2.3 Credit for filters
-======================
+## Credit for filters
 
 The event filters are inspired from the filters on the popular IR tool
 [sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon). The
@@ -161,8 +177,7 @@ derived from the high fidelity sysmon filters built by
 by [ion-storm](https://github.com/ion-storm/sysmon-config). Many other
 configurations can be created.
 
-3 YARA Matching on file events
-------------------------------
+# YARA Matching on file events
 
 The extension can be configured to match file events with yara rules. The syntax for configuring yara follows the same 
 syntax as in the [osquery](https://osquery.readthedocs.io/en/stable/deployment/yara/). For the current release, only 
@@ -226,8 +241,7 @@ With the build 1.0.40.1, following yara [externals](https://yara.readthedocs.io/
 
 With the support of these external variables, the scope of the yara rules that could be consumed by the engine could vastly improve.
 
-4 Application Log Monitoring
-----------------------------
+# Application Log Monitoring
 
 With the extension version 1.0.24 a new table has been introduced called
 **win_logger_events**. This table can be configured to monitor arbitrary application
@@ -314,8 +328,7 @@ osquery> select * from win_logger_events;
 +-------------+-------------------+----------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-5 Scanning processes for suspicious memory
-------------------------------------------
+# Scanning processes for suspicious memory
 
 With the version 1.0.27.7, we have integrated the powerful tool [pe-sieve](https://github.com/hasherezade/pe-sieve) as part of our extension. pe-sieve is a very powerful tool that can scan a process for a variety of malicious implants like shell-codes, API hooks, and replaced/injected PE modules (e.g. process hollowing or reflective DLLs). The original tool can found in the [hasherzade](https://github.com/hasherezade) repository. Leveraging the tool, following 2 new tables have been created.
 
@@ -354,8 +367,7 @@ osquery> select * from file where directory="C:\ProgramData\plgx_win_extension\s
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-6 SSL/TLS certificates monitoring
-------------------------------------------
+# SSL/TLS certificates monitoring
 
 With the version 1.0.30.10, we have introduced a table that captures the SSL/TLS credentials for every TLS connection from the agent.
 
@@ -409,8 +421,7 @@ A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the o
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-7 Windows Event Log tables
----------------------------
+# Windows Event Log tables
 
 The based osquery tool provided an event driven approach to collect data from Windows Event Log. This requires that the channels from which the events need to be collected have to be provided at the time of provisioning the agent and the tool will restrict the collection of log data to those channels. For purposes of incident response however, the ability to collect any log from any channel (including retrospective logs) is of paramount importance. We have extended osquery's SQL interface in our extension to facilitate this capability making the collection, aggregation and parsing of Windows Event Log data simplified.
 
@@ -539,16 +550,14 @@ osquery>
 Similar queries can be created to collect log data from any channel.
 
 
-8 Extension SDK
-----------------
+# Extension SDK
 
 With the release 1.0.23.3, we have introduced an experimental SDK that allows
 the extension to be used as a bridge between an endpoint application and
 osquery. For more details, check
 [it](https://github.com/polylogyx/osq-ext-bin/tree/master/osq-ext-sdk) out.
 
-9 YARA Matching on process events
-----------------------------------
+# YARA Matching on process events
 
 The extension can be configured to match process events with yara rules. For the current release, only 
 the evented version of yara table (win_yara_events) is supported. A sample config would look like following:
@@ -596,8 +605,7 @@ A custom flag called **custom_plgx_EnableYaraProcessScan** needs to be set to tr
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-10 AMSI Scan for malware in files
----------------------------------
+# AMSI Scan for malware in files
 
 The extension can be configured to do AMSI Scan for malware on files. 
 For any file write operation anywhere in the file, the file content from beginning upto maximum 70 bytes will be scanned using AmsiScanBuffer() API. 
@@ -628,11 +636,9 @@ A custom flag called **custom_plgx_EnableAmsiStreamEventData** needs to be set t
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-11 Blocking for file operations, registry operations, and process creation/termination
----------------------------------------------------------------------------------------
+# Blocking for file operations, registry operations, and process creation/termination
 
-11.1 Description
-================
+## Description
 Using blocking rules, you can configure agent to block actions, or operations, or events from taking place on a system. These operations are: 
 
 - File Operations 
@@ -654,8 +660,7 @@ Blocking rules are not applicable to actions done by EclecticIQ agent process, w
 
 Wild cards (* and ?) are supported(same as filters) for defining rules. 
 
-11.2 Blocking Rules configuration 
-=================================
+## Blocking Rules configuration 
 
 Block/Allow Rules can be defined based on following parameters – 
 
@@ -810,8 +815,7 @@ A custom flag called **custom_plgx_EnableBlocking** needs to be set to true via 
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-12 Switch to enable or disable network packet processing for SSL, DNS, HTTP events
-----------------------------------------------------------------------------------
+# Switch to enable or disable network packet processing for SSL, DNS, HTTP events
 
 By default, network packets processing is disabled. Hence, SSL, DNS, HTTP events won't be generated. 
  
@@ -832,8 +836,7 @@ In order to disable SSL, DNS, HTTP events again after enabling, reset the desire
 - sc stop vastnw
 - sc start osqueryd
   
-13 Switch to enable or disable shallow SSL events
-----------------------------------------------------------------------------------
+# Switch to enable or disable shallow SSL events
 
 Shallow SSL events are trimmed down SSL events with no certificate information.
  
@@ -847,8 +850,7 @@ To enable shallow SSL events, following custom flags need to be set accordingly 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If both custom_plgx_EnableSSL and custom_plgx_EnableShallowSSL are set to "true", custom_plgx_EnableSSL will take precendence over custom_plgx_EnableShallowSSL.
 
-14 Network statistics table
-----------------------------------------------------------------------------------
+# Network statistics table
 
 A new table win_network_stats is introduced to dump snapshot of network activity at a point of time
 
@@ -863,8 +865,7 @@ osquery> select * from win_network_stats;
 +------------+------------------------+-------------------+-----------------------------------------+-------------+-----------------------------------------+------------+----------------+----------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-14 File events on network paths
-----------------------------------------------------------------------------------
+# File events on network paths
 
 win_file_events table has been enhanced to show file events on network shares and mounted drives
 
@@ -877,8 +878,7 @@ osquery>select * from win_file_events;
 +-------------+--------------------------------------+-------------------------------------------------------------------------------------------------+-----+--------+--------+---------+------------+------------------------------+---------+------+--------------------------------------+-------------------------+-----------------+-------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-15 Process events on network paths
-----------------------------------------------------------------------------------
+# Process events on network paths
 
 win_process_events table has been enhanced to show process events on network shares and mounted drives
 
@@ -892,27 +892,7 @@ osquery>select * from win_process_events where path like '%foo%';
 +----------------+--------------------------------------+-------+--------------------------------------+---------------------------------------------+--------------------------------------+------------+--------------------------------------+-------------------------+---------------------------+------------+------------------------------+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-16 File delete by disposition event 
------------------------------------
-
-Windows OS provides more than one method for a file to get deleted. In order to self-delete, malwares like Zero-Access use another trick that would help them evade such monitoring of delete files. 
-This method requires that the DeleteFile member of file's FILE_DISPOSITION_INFORMATION be set to TRUE with SetFileInformationByHandle() API.
-
-The test-tools folder contains [filedeletetest](https://github.com/eclecticiq/osq-ext-bin/tree/master/test-tools/file_delete_test_tool) tool  which demonstrates this scenario by first creating a file C:\test\mytest.bat and then deleting it via method described above. 
-The sample output of the win_file_events table would look something like:
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-osquery> select * from win_file_events where action like '%FILE_DELETE_BY_DISP%';
-+---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
-| action              | eid                                  | target_path                 | md5 | sha256 | hashed | uid                    | time       | utc_time                 | pe_file | pid  | process_guid                         | process_name                     | amsi_is_malware | byte_stream | eventid |
-+---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+
-| FILE_DELETE_BY_DISP | 5BFDD450-3238-4AFC-8A64-437F00000000 | C:\test\mytest.bat          |     |        | 0      | BUILTIN\Administrators | 1651056208 | Wed Apr 27 10:43:28 2022 | NO      | 3676 | F7BFEC3E-C60F-11EC-B6E8-6045BDA5C0C0 | C:\test\filedeletetest.exe       |                 |             | 1       |
-+---------------------+--------------------------------------+-----------------------------+-----+--------+--------+------------------------+------------+--------------------------+---------+------+--------------------------------------+----------------------------------+-----------------+-------------+---------+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-17 FAQ
-------
+# FAQ
 
 1.  What is extension version?
 
