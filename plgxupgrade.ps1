@@ -3,7 +3,7 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
 # Globals
-$url = 'https://github.com/polylogyx/osq-ext-bin/raw/master/plgx_win_extension.ext.exe'
+$url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/plgx_win_extension.ext.exe'
 $ExtnFilename = 'plgx_win_extension.ext.exe'
 
 function DownloadExtensionBinary {   
