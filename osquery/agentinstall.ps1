@@ -4,27 +4,27 @@ param(
   [switch] $fslog = $false
 )
 
-[Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
 # Globals
-$extnDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/plgx_win_extension.ext.exe'
-$osquerydDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/osqueryd.exe'
-$osqueryConfDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/osquery.conf'
-$osqueryEvtloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/osquery_evtlogger.flags'
-$osqueryFsloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/osquery_fslogger.flags'
-$osqueryManifestDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/osquery.man'
+$extnDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/plgx_win_extension.ext.exe'
+$osquerydDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osqueryd.exe'
+$osqueryConfDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery.conf'
+$osqueryEvtloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery_evtlogger.flags'
+$osqueryFsloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery_fslogger.flags'
+$osqueryManifestDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery.man'
+$extnLoadDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/extensions.load'
 
 # Globals for packs files
-$osqueryPack1Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/hardware-monitoring.conf'
-$osqueryPack2Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/incident-response.conf'
-$osqueryPack3Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/it-compliance.conf'
-$osqueryPack4Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/osquery-monitoring.conf'
-$osqueryPack5Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/ossec-rootkit.conf'
-$osqueryPack6Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/osx-attacks.conf'
-$osqueryPack7Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/unwanted-chrome-extensions.conf'
-$osqueryPack8Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/vuln-management.conf'
-$osqueryPack9Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/windows-attacks.conf'
-$osqueryPack10Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/osquery/packs/windows-hardening.conf'
+$osqueryPack1Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/hardware-monitoring.conf'
+$osqueryPack2Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/incident-response.conf'
+$osqueryPack3Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/it-compliance.conf'
+$osqueryPack4Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/osquery-monitoring.conf'
+$osqueryPack5Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/ossec-rootkit.conf'
+$osqueryPack6Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/osx-attacks.conf'
+$osqueryPack7Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/unwanted-chrome-extensions.conf'
+$osqueryPack8Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/vuln-management.conf'
+$osqueryPack9Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/windows-attacks.conf'
+$osqueryPack10Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/windows-hardening.conf'
 
 
 $ExtnFilename = 'plgx_win_extension.ext.exe'
@@ -32,6 +32,8 @@ $OsquerydFilename = 'osqueryd.exe'
 $OsqueryConfFilename = 'osquery.conf'
 $OsqueryEvtloggerFlagsFilename = 'osquery_evtlogger.flags'
 $OsqueryFsloggerFlagsFilename = 'osquery_fslogger.flags'
+$OsqueryExtnLoadFilename = 'extensions.load'
+
 $OsqueryManifestFilename = 'osquery.man'
 $OsqueryPackFile1 = 'hardware-monitoring.conf'
 $OsqueryPackFile2 = 'incident-response.conf'
@@ -50,13 +52,23 @@ $kServiceName = "osqueryd"
 $kServiceDescription = "osquery daemon service"
 $kServiceBinaryPath = (Join-Path "$Env:ProgramFiles\osquery\osqueryd\" "osqueryd.exe")
 $welManifestPath = (Join-Path "$Env:ProgramFiles\osquery\" "osquery.man")
+$startupArgs = ("--flagfile=`"$Env:ProgramFiles\osquery\osquery.flags`"")
 
-function DownloadFileFromUrl($fileDownloadUrl, $file)
-{			
+function DownloadFileFromUrl {		
+  param([string]$fileDownloadUrl, [string]$file)
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12
+  [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+
   $webclient = New-Object System.Net.WebClient
+  if ($webclient.Length -eq 0) {
+    Write-Host -ForegroundColor RED "[-] Webclient not inited. Exiting!!"
+    Exit -1
+  }
+
   $filepath = "$pwd\$file"
 
   try {
+    Write-Host -ForegroundColor Yellow  "[+] Downloading file: [$fileDownloadUrl] to [$filepath]"
     $webclient.DownloadFile($fileDownloadUrl, $filepath)       
   }
   catch [Net.WebException] {
@@ -68,23 +80,24 @@ function DownloadFileFromUrl($fileDownloadUrl, $file)
 }
 
 function DownloadFiles {
-	DownloadFileFromUrl($extnDownloadUrl, $ExtnFilename)
-	DownloadFileFromUrl($osquerydDownloadUrl, $OsquerydFilename)
-	DownloadFileFromUrl($osqueryConfDownloadUrl, $OsqueryConfFilename)
-	DownloadFileFromUrl($osqueryEvtloggerFlagsDownloadUrl, $OsqueryEvtloggerFlagsFilename)
-	DownloadFileFromUrl($osqueryFsloggerFlagsDownloadUrl, $OsqueryFsloggerFlagsFilename)
-	DownloadFileFromUrl($osqueryManifestDownloadUrl, $OsqueryManifestFilename)
+	DownloadFileFromUrl $extnDownloadUrl $ExtnFilename
+	DownloadFileFromUrl $osquerydDownloadUrl $OsquerydFilename
+	DownloadFileFromUrl $osqueryConfDownloadUrl $OsqueryConfFilename
+	DownloadFileFromUrl $osqueryEvtloggerFlagsDownloadUrl $OsqueryEvtloggerFlagsFilename
+	DownloadFileFromUrl $osqueryFsloggerFlagsDownloadUrl $OsqueryFsloggerFlagsFilename
+	DownloadFileFromUrl $osqueryManifestDownloadUrl $OsqueryManifestFilename
+	DownloadFileFromUrl $extnLoadDownloadUrl $OsqueryExtnLoadFilename
 	
-	DownloadFileFromUrl($osqueryPack1Url, $OsqueryPackFile1)
-	DownloadFileFromUrl($osqueryPack2Url, $OsqueryPackFile2)
-	DownloadFileFromUrl($osqueryPack3Url, $OsqueryPackFile3)
-	DownloadFileFromUrl($osqueryPack4Url, $OsqueryPackFile4)
-	DownloadFileFromUrl($osqueryPack5Url, $OsqueryPackFile5)
-	DownloadFileFromUrl($osqueryPack6Url, $OsqueryPackFile6)
-	DownloadFileFromUrl($osqueryPack7Url, $OsqueryPackFile7)
-	DownloadFileFromUrl($osqueryPack8Url, $OsqueryPackFile8)
-	DownloadFileFromUrl($osqueryPack9Url, $OsqueryPackFile9)
-	DownloadFileFromUrl($osqueryPack10Url, $OsqueryPackFile10)	
+	DownloadFileFromUrl $osqueryPack1Url $OsqueryPackFile1
+	DownloadFileFromUrl $osqueryPack2Url $OsqueryPackFile2
+	DownloadFileFromUrl $osqueryPack3Url $OsqueryPackFile3
+	DownloadFileFromUrl $osqueryPack4Url $OsqueryPackFile4
+	DownloadFileFromUrl $osqueryPack5Url $OsqueryPackFile5
+	DownloadFileFromUrl $osqueryPack6Url $OsqueryPackFile6
+	DownloadFileFromUrl $osqueryPack7Url $OsqueryPackFile7
+	DownloadFileFromUrl $osqueryPack8Url $OsqueryPackFile8
+	DownloadFileFromUrl $osqueryPack9Url $OsqueryPackFile9
+	DownloadFileFromUrl $osqueryPack10Url $OsqueryPackFile10	
 }
 
 function StartOsqueryService {
@@ -117,7 +130,7 @@ function StartOsqueryService {
 
 function CheckOsqueryService {
 
-	#check osqueryd service
+    #check osqueryd service
     $ServiceName = 'osqueryd'
     $ServiceObj = Get-Service -Name $ServiceName
 
@@ -133,8 +146,7 @@ function CheckOsqueryService {
 
 
 function CheckEiqAgentService {
-
-	#check EIQ agent service
+    #check EIQ agent service
     $ServiceName = 'plgx_agent'
     $ServiceObj = Get-Service -Name $ServiceName
 
@@ -155,41 +167,46 @@ function Test-IsAdmin {
     )
 }
 
-function CopyFile ($src, $dest) {
+function CopyFile {
+    param([string]$src, [string]$dest)
+
     Write-Host -ForegroundColor Yellow "[+] Copying $src to $dest."
     Copy-Item -Path "$src" -Destination "$dest" -Force
 }
 
 function CopyFilesToInstalldir {
-	New-Item -Path '$Env:ProgramFiles\osquery\osqueryd' -ItemType Directory
-	New-Item -Path '$Env:ProgramFiles\osquery\packs' -ItemType Directory
+	New-Item -Path "${Env:ProgramFiles}\osquery" -ItemType Directory
+	New-Item -Path "${Env:ProgramFiles}\osquery\osqueryd" -ItemType Directory
+	New-Item -Path "${Env:ProgramFiles}\osquery\packs" -ItemType Directory
+	New-Item -Path "${Env:ProgramFiles}\osquery\log" -ItemType Directory
 	
-	CopyFile("$pwd\$ExtnFilename", "$Env:ProgramFiles\osquery\$ExtnFilename")
-	CopyFile("$pwd\$OsquerydFilename", "$Env:ProgramFiles\osquery\osqueryd\$OsquerydFilename")
-	CopyFile("$pwd\$OsqueryConfFilename", "$Env:ProgramFiles\osquery\$OsqueryConfFilename")
+	CopyFile "$pwd\$ExtnFilename" "${Env:ProgramFiles}\osquery\$ExtnFilename"
+	CopyFile "$pwd\$OsquerydFilename" "${Env:ProgramFiles}\osquery\osqueryd\$OsquerydFilename"
+	CopyFile "$pwd\$OsqueryConfFilename" "${Env:ProgramFiles}\osquery\$OsqueryConfFilename"
 	
 	#check what logger option was chosen for install then copy flags file accordingly
 	if($evtlog){
-		CopyFile("$pwd\$OsqueryEvtloggerFlagsFilename", "$Env:ProgramFiles\osquery\osquery.flags")
+		CopyFile "$pwd\$OsqueryEvtloggerFlagsFilename" "${Env:ProgramFiles}\osquery\osquery.flags"
 	} elseif($fslog) {
-		CopyFile("$pwd\$OsqueryFsloggerFlagsFilename", "$Env:ProgramFiles\osquery\osquery.flags")
+		CopyFile "$pwd\$OsqueryFsloggerFlagsFilename" "${Env:ProgramFiles}\osquery\osquery.flags"
 	} else {
 		Write-Host -ForegroundColor RED '[-] We should not reach here. Script will abort the installation now!!'
         Exit -1
 	}	
 	
-	CopyFile("$pwd\$OsqueryManifestFilename", "$Env:ProgramFiles\osquery\$OsqueryManifestFilename")	
+	CopyFile "$pwd\$OsqueryManifestFilename" "${Env:ProgramFiles}\osquery\$OsqueryManifestFilename"	
+	CopyFile "$pwd\$OsqueryExtnLoadFilename" "${Env:ProgramFiles}\osquery\$OsqueryExtnLoadFilename"	
 	
-	CopyFile("$pwd\$OsqueryPackFile1", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile1")
-	CopyFile("$pwd\$OsqueryPackFile2", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile2")
-	CopyFile("$pwd\$OsqueryPackFile3", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile3")
-	CopyFile("$pwd\$OsqueryPackFile4", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile4")
-	CopyFile("$pwd\$OsqueryPackFile5", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile5")
-	CopyFile("$pwd\$OsqueryPackFile6", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile6")
-	CopyFile("$pwd\$OsqueryPackFile7", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile7")
-	CopyFile("$pwd\$OsqueryPackFile8", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile8")
-	CopyFile("$pwd\$OsqueryPackFile9", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile9")
-	CopyFile("$pwd\$OsqueryPackFile10", "$Env:ProgramFiles\osquery\packs\$OsqueryPackFile10")
+	CopyFile "$pwd\$OsqueryPackFile1" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile1"
+	CopyFile "$pwd\$OsqueryPackFile2" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile2"
+	CopyFile "$pwd\$OsqueryPackFile3" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile3"
+	CopyFile "$pwd\$OsqueryPackFile4" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile4"
+	CopyFile "$pwd\$OsqueryPackFile5" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile5"
+	CopyFile "$pwd\$OsqueryPackFile6" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile6"
+	CopyFile "$pwd\$OsqueryPackFile7" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile7"
+	CopyFile "$pwd\$OsqueryPackFile8" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile8"
+	CopyFile "$pwd\$OsqueryPackFile9" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile9"
+	CopyFile "$pwd\$OsqueryPackFile10" "${Env:ProgramFiles}\osquery\packs\$OsqueryPackFile10"
 }
 
 function Do-Help {
