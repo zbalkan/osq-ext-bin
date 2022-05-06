@@ -55,28 +55,28 @@ $welManifestPath = (Join-Path "$Env:ProgramFiles\osquery\" "osquery.man")
 $startupArgs = ("--flagfile=`"$Env:ProgramFiles\osquery\osquery.flags`"")
 
 function DownloadFileFromUrl {		
-  param([string]$fileDownloadUrl, [string]$file)
-  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12
-  [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+	param([string]$fileDownloadUrl, [string]$file)
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12
+	[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 
-  $webclient = New-Object System.Net.WebClient
-  if ($webclient.Length -eq 0) {
-    Write-Host -ForegroundColor RED "[-] Webclient not inited. Exiting!!"
-    Exit -1
-  }
+	$webclient = New-Object System.Net.WebClient
+	if ($webclient.Length -eq 0) {
+		Write-Host -ForegroundColor RED "[-] Webclient not inited. Exiting!!"
+		Exit -1
+	}
 
-  $filepath = "$pwd\$file"
+	$filepath = "$pwd\$file"
 
-  try {
-    Write-Host -ForegroundColor Yellow  "[+] Downloading file: [$fileDownloadUrl] to [$filepath]"
-    $webclient.DownloadFile($fileDownloadUrl, $filepath)       
-  }
-  catch [Net.WebException] {
-    Write-Host -ForegroundColor RED "[-] Aborting Extension Upgrade, Failed to download file from $fileDownloadUrl"
-    Exit -1
-  }
+	try {
+		Write-Host -ForegroundColor Yellow  "[+] Downloading file: [$fileDownloadUrl] to [$filepath]"
+		$webclient.DownloadFile($fileDownloadUrl, $filepath)       
+	}
+	catch [Net.WebException] {
+		Write-Host -ForegroundColor RED "[-] Aborting Extension Upgrade, Failed to download file from $fileDownloadUrl"
+		Exit -1
+	}
 
-  Write-Host -ForegroundColor Yellow  "[+] Downloaded file successfully: $file to $pwd"
+	Write-Host -ForegroundColor Yellow  "[+] Downloaded file successfully: $file to $pwd"
 }
 
 function DownloadFiles {
@@ -132,7 +132,7 @@ function CheckOsqueryService {
 
     #check osqueryd service
     $ServiceName = 'osqueryd'
-    $ServiceObj = Get-Service -Name $ServiceName
+    $ServiceObj = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
 
     if ($ServiceObj.Length -gt 0) {
         Write-Host -ForegroundColor Yellow '[+] Osqueryd Service Status: '  $ServiceObj.status
@@ -148,7 +148,7 @@ function CheckOsqueryService {
 function CheckEiqAgentService {
     #check EIQ agent service
     $ServiceName = 'plgx_agent'
-    $ServiceObj = Get-Service -Name $ServiceName
+    $ServiceObj = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
 
     if ($ServiceObj.Length -gt 0) {
         Write-Host -ForegroundColor Yellow '[+] EIQ agent Service Status: '  $ServiceObj.status
@@ -210,18 +210,18 @@ function CopyFilesToInstalldir {
 }
 
 function Do-Help {
-  $programName = (Get-Item $PSCommandPath ).Name
+	$programName = (Get-Item $PSCommandPath ).Name
   
-  Write-Host "Usage: $programName (-evtlog|-fslog|-help)" -foregroundcolor Yellow
-  Write-Host ""
-  Write-Host "  Only one of the following options can be used. Using multiple will result in "
-  Write-Host "  options being ignored."
-  Write-Host "    -evtlog		Install the osqueryd service and extension with windows event log as the logger plugin"
-  Write-Host "    -fslog		Install the osqueryd service and extension with filesystem as the logger plugin"
-  Write-Host ""
-  Write-Host "    -help		Shows this help screen"
+	Write-Host "Usage: $programName (-evtlog|-fslog|-help)" -foregroundcolor Yellow
+	Write-Host ""
+	Write-Host "  Only one of the following options can be used. Using multiple will result in "
+	Write-Host "  options being ignored."
+	Write-Host "    -evtlog		Install the osqueryd service and extension with windows event log as the logger plugin"
+	Write-Host "    -fslog		Install the osqueryd service and extension with filesystem as the logger plugin"
+	Write-Host ""
+	Write-Host "    -help		Shows this help screen"
   
-  Exit 1
+	Exit 1
 }
 
 
