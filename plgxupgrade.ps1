@@ -141,7 +141,7 @@ function Main {
     StopPlgxServices
 
     # Update downloaded extension binary and restart osqueryd service
-    $dstpath = "$Env:Programdata\osquery\$extn"
+    $dstpath = "$Env:Programdata\osquery\$ExtnFilename"
     Write-Host -ForegroundColor Yellow "[+] Copying downloaded extension binary to default osquery install location."
     Copy-Item -Path "$pwd\$ExtnFilename" -Destination $dstpath -Force
 
