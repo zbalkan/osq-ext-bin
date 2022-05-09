@@ -1,30 +1,30 @@
 param(
   [switch] $help = $false,
-  [switch] $evtlog = $false,
-  [switch] $fslog = $false
+  [switch] $windows_event_log = $false,
+  [switch] $filesystem = $false
 )
 
 
 # Globals
 $extnDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/plgx_win_extension.ext.exe'
-$osquerydDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osqueryd.exe'
-$osqueryConfDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery.conf'
-$osqueryEvtloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery_evtlogger.flags'
-$osqueryFsloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery_fslogger.flags'
-$osqueryManifestDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/osquery.man'
+$osquerydDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osqueryd.exe'
+$osqueryConfDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery.conf'
+$osqueryEvtloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery_evtlogger.flags'
+$osqueryFsloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery_fslogger.flags'
+$osqueryManifestDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery.man'
 $extnLoadDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/extensions.load'
 
 # Globals for packs files
-$osqueryPack1Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/hardware-monitoring.conf'
-$osqueryPack2Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/incident-response.conf'
-$osqueryPack3Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/it-compliance.conf'
-$osqueryPack4Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/osquery-monitoring.conf'
-$osqueryPack5Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/ossec-rootkit.conf'
-$osqueryPack6Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/osx-attacks.conf'
-$osqueryPack7Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/unwanted-chrome-extensions.conf'
-$osqueryPack8Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/vuln-management.conf'
-$osqueryPack9Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/windows-attacks.conf'
-$osqueryPack10Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/osquery/packs/windows-hardening.conf'
+$osqueryPack1Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/hardware-monitoring.conf'
+$osqueryPack2Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/incident-response.conf'
+$osqueryPack3Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/it-compliance.conf'
+$osqueryPack4Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/osquery-monitoring.conf'
+$osqueryPack5Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/ossec-rootkit.conf'
+$osqueryPack6Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/osx-attacks.conf'
+$osqueryPack7Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/unwanted-chrome-extensions.conf'
+$osqueryPack8Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/vuln-management.conf'
+$osqueryPack9Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/windows-attacks.conf'
+$osqueryPack10Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/windows-hardening.conf'
 
 
 $ExtnFilename = 'plgx_win_extension.ext.exe'
@@ -108,13 +108,13 @@ function StartOsqueryService {
 				-DisplayName $kServiceName `
 				-Description $kServiceDescription `
 				-StartupType Automatic
-	Write-Host "Installed '$kServiceName' system service." -foregroundcolor Cyan
+	Write-Host "[+] Installed '$kServiceName' system service." -foregroundcolor Cyan
 	
 	wevtutil im $welManifestPath
     if ($?) {
-      Write-Host "The Windows Event Log manifest has been successfully installed." -foregroundcolor Cyan
+      Write-Host "[+] The Windows Event Log manifest has been successfully installed." -foregroundcolor Cyan
     } else {
-      Write-Host "Failed to install the Windows Event Log manifest." -foregroundcolor RED
+      Write-Host "[-] Failed to install the Windows Event Log manifest." -foregroundcolor RED
     }
 
     $ServiceObj = Get-Service -Name $kServiceName
@@ -140,7 +140,7 @@ function CheckOsqueryService {
         Exit -1
     } 
 	else {
-        Write-Host -ForegroundColor Yellow '[+] Osqueryd Service not found on the system: OK'
+        Write-Host -ForegroundColor Cyan '[+] Osqueryd Service not found on the system: OK'
 	}
 }
 
@@ -156,7 +156,7 @@ function CheckEiqAgentService {
         Exit -1
     }
 	else {
-        Write-Host -ForegroundColor Yellow '[+] EIQ agent Service not found on the system: OK'
+        Write-Host -ForegroundColor Cyan '[+] EIQ agent Service not found on the system: OK'
 	}	
 }
 
@@ -185,9 +185,9 @@ function CopyFilesToInstalldir {
 	CopyFile "$pwd\$OsqueryConfFilename" "${Env:ProgramFiles}\osquery\$OsqueryConfFilename"
 	
 	#check what logger option was chosen for install then copy flags file accordingly
-	if($evtlog){
+	if($windows_event_log){
 		CopyFile "$pwd\$OsqueryEvtloggerFlagsFilename" "${Env:ProgramFiles}\osquery\osquery.flags"
-	} elseif($fslog) {
+	} elseif($filesystem) {
 		CopyFile "$pwd\$OsqueryFsloggerFlagsFilename" "${Env:ProgramFiles}\osquery\osquery.flags"
 	} else {
 		Write-Host -ForegroundColor RED '[-] We should not reach here. Script will abort the installation now!!'
@@ -212,14 +212,16 @@ function CopyFilesToInstalldir {
 function Do-Help {
 	$programName = (Get-Item $PSCommandPath ).Name
   
-	Write-Host "Usage: $programName (-evtlog|-fslog|-help)" -foregroundcolor Yellow
+	Write-Host "Usage: $programName (-windows_event_log|-filesystem|-help)" -foregroundcolor Yellow
 	Write-Host ""
-	Write-Host "  Only one of the following options can be used. Using multiple will result in "
-	Write-Host "  options being ignored."
-	Write-Host "    -evtlog		Install the osqueryd service and extension with windows event log as the logger plugin"
-	Write-Host "    -fslog		Install the osqueryd service and extension with filesystem as the logger plugin"
+	Write-Host "  Only one of the following options can be used. Using multiple will result in options being ignored."
+	Write-Host "    -windows_event_log		Install the osqueryd service and extension with windows_event_log as the logger plugin"
+	Write-Host "    -filesystem			Install the osqueryd service and extension with filesystem as the logger plugin"
 	Write-Host ""
-	Write-Host "    -help		Shows this help screen"
+	Write-Host "    -help			Shows this help screen"
+	Write-Host ""
+	Write-Host "  If no option is selected, by default the script will install osquery and extension with filesystem as logger plugin."
+	Write-Host ""
   
 	Exit 1
 }
@@ -236,7 +238,14 @@ function Main {
 
 	if ($help) {
 		Do-Help
-	} elseif (($evtlog.ToBool() + $fslog.ToBool()) -Eq 1) {
+	} else {
+		if ($windows_event_log.ToBool() -Eq 1) {
+			Write-Host -ForegroundColor Yellow "[+] Proceeding with windows_event_log as logger plugin."
+		} else {
+			$filesystem = $true
+			Write-Host -ForegroundColor Yellow "[+] Proceeding with filesystem as logger plugin."	
+		}
+		
 		#verify osquery service doesnt exist
 		CheckOsqueryService
 
@@ -252,11 +261,7 @@ function Main {
 		StartOsqueryService
 		
 		Write-Host -ForegroundColor Yellow "========================================================================"
-	} else {
-		Write-Host "Invalid option selected: please see -help for usage details." -foregroundcolor Red
-		Exit -1
 	}
-
 }
 
 $startTime = Get-Date
