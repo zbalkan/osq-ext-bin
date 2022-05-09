@@ -1,7 +1,8 @@
 param(
   [switch] $help = $false,
   [switch] $windows_event_log = $false,
-  [switch] $filesystem = $false
+  [switch] $filesystem = $false,
+  [switch] $uninstall = $false
 )
 
 
@@ -212,13 +213,14 @@ function CopyFilesToInstalldir {
 function Do-Help {
 	$programName = (Get-Item $PSCommandPath ).Name
   
-	Write-Host "Usage: $programName (-windows_event_log|-filesystem|-help)" -foregroundcolor Yellow
+	Write-Host "Usage: $programName (-windows_event_log|-filesystem|-help|-uninstall)" -foregroundcolor Yellow
 	Write-Host ""
 	Write-Host "  Only one of the following options can be used. Using multiple will result in options being ignored."
 	Write-Host "    -windows_event_log		Install the osqueryd service and extension with windows_event_log as the logger plugin"
 	Write-Host "    -filesystem			Install the osqueryd service and extension with filesystem as the logger plugin"
 	Write-Host ""
 	Write-Host "    -help			Shows this help screen"
+	Write-Host "    -uninstall			Removes the osquery, extension and other installed files"
 	Write-Host ""
 	Write-Host "  If no option is selected, by default the script will install osquery and extension with filesystem as logger plugin."
 	Write-Host ""
@@ -226,6 +228,133 @@ function Do-Help {
 	Exit 1
 }
 
+function CleanupDownloadedFiles {
+	Remove-Item "$pwd\$ExtnFilename"
+	Remove-Item "$pwd\$OsquerydFilename"
+	Remove-Item "$pwd\$OsqueryConfFilename"
+	Remove-Item "$pwd\$OsqueryEvtloggerFlagsFilename"
+	Remove-Item "$pwd\$OsqueryFsloggerFlagsFilename"
+	Remove-Item "$pwd\$OsqueryManifestFilename"	
+	Remove-Item "$pwd\$OsqueryExtnLoadFilename"	
+	Remove-Item "$pwd\$OsqueryPackFile1"
+	Remove-Item "$pwd\$OsqueryPackFile2"
+	Remove-Item "$pwd\$OsqueryPackFile3"
+	Remove-Item "$pwd\$OsqueryPackFile4"
+	Remove-Item "$pwd\$OsqueryPackFile5"
+	Remove-Item "$pwd\$OsqueryPackFile6"
+	Remove-Item "$pwd\$OsqueryPackFile7"
+	Remove-Item "$pwd\$OsqueryPackFile8"
+	Remove-Item "$pwd\$OsqueryPackFile9"
+	Remove-Item "$pwd\$OsqueryPackFile10"
+}
+
+function StopPlgxServices {
+    # clean vast service
+    $VastSvc = 'vast'
+    $VastPath = "${Env:windir}\system32\drivers\vast.sys"    
+    $ServiceObj = Get-Service -Name $VastSvc    
+    
+    if ($ServiceObj.Status -eq 'Running') {
+        Stop-Service $VastSvc  -ErrorAction SilentlyContinue
+        Write-Host -ForegroundColor Yellow '[+] VAST Service Status: ' $ServiceObj.status
+        Write-Host -ForegroundColor Yellow '[+] VAST Service Stop Initiated...Wait for service to stop'
+        
+        $WaitRetryCount = 0
+    
+        while ($ServiceObj.Status -ne 'Stopped' -and $WaitRetryCount -le 3) {
+            Start-Sleep -Seconds 10
+            $ServiceObj.Refresh()
+            Write-Host -ForegroundColor Yellow '[+] VAST Service Status: ' $ServiceObj.status
+            $WaitRetryCount += 1
+            Write-Host -ForegroundColor Yellow  '[+] VAST Service Stop Wait Retry Count : ' $WaitRetryCount
+        }    
+    }
+	
+    Write-Host -ForegroundColor Yellow '[+] VAST Service is now Stopped or timed-out, cleanup vast.sys'
+    Remove-Item -Path $VastPath -Force -ErrorAction SilentlyContinue
+        
+    # clean vastnw service
+    $VastnwSvc = 'vastnw'
+    $VastnwPath = "${Env:windir}\system32\drivers\vastnw.sys"
+    $ServiceObj = Get-Service -Name $VastnwSvc  
+
+    if ($ServiceObj.Status -eq 'Running') {
+        Stop-Service $VastnwSvc  -ErrorAction SilentlyContinue
+        Write-Host -ForegroundColor Yellow '[+] VASTNW Service Status: ' $ServiceObj.status
+        Write-Host -ForegroundColor Yellow '[+] VASTNW Service Stop Initiated...Wait for service to stop'
+        
+        $WaitRetryCount = 0
+        while ($ServiceObj.Status -ne 'Stopped' -and $WaitRetryCount -le 3) {
+            Start-Sleep -Seconds 10
+            $ServiceObj.Refresh()
+            Write-Host -ForegroundColor Yellow '[+] VASTNW Service Status: ' $ServiceObj.status
+            $WaitRetryCount += 1
+            Write-Host -ForegroundColor Yellow  '[+] VASTNW Service Stop Wait Retry Count '  $WaitRetryCount
+        }    
+    }
+	
+    Write-Host -ForegroundColor Yellow '[+] VASTNW service is now Stopped or timed-out, cleanup vastnw.sys'
+    Remove-Item -Path $VastnwPath -Force -ErrorAction SilentlyContinue
+}
+
+function CleanupInstalledFiles {
+	Remove-Item -Path "${Env:ProgramFiles}\osquery" -Recurse -Force -ErrorAction SilentlyContinue
+	Remove-Item -Path "${Env:ProgramFiles}\plgx_osquery" -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "[+] Done cleaning up install folders" -foregroundcolor Yellow
+}
+
+function UninstallAgent {
+	
+	#stop and remove osquery service and manifest
+	$osquerydService = Get-WmiObject -Class Win32_Service -Filter "Name='$kServiceName'"
+
+    if ($osquerydService) {
+		Stop-Service $kServiceName
+		Write-Host "[+] Found '$kServiceName', stopping the system service..."
+		Start-Sleep -s 5
+		Write-Host "[+] System service should be stopped."
+      
+	    # fetch osqueryd and extension process object to terminate forcefully if they survive
+		$OsquerydProc = Get-Process osqueryd -ErrorAction SilentlyContinue
+		$PlgxExtnProc = Get-Process plgx_win_extension.ext.exe -ErrorAction SilentlyContinue
+    
+		if ($ServiceObj.Status -ne 'Stopped' -Or $OsquerydProc -Or $PlgxExtnProc) {
+			Write-Host -ForegroundColor Yellow '[+] Force kill osqueryd and extension process if still exist'
+
+			if ($OsquerydProc) {
+				Stop-Process -Name 'osqueryd' -Force -ErrorAction SilentlyContinue
+			}
+
+			if($PlgxExtnProc)
+			{
+				Stop-Process -Name 'plgx_win_extension.ext' -Force -ErrorAction SilentlyContinue
+			}
+		}   
+
+		$osquerydService.Delete()
+		Write-Host "[+] System service '$kServiceName' uninstalled." -foregroundcolor Cyan
+      
+		if (-not (Test-Path $welManifestPath)) {
+			Write-Host "[-] Failed to find the osquery Event Log manifest file! ($welManifestPath)" -ForegroundColor Red
+		} else {
+			wevtutil um $welManifestPath
+			
+			if ($?) {
+				Write-Host "[+] The Windows Event Log manifest has been successfully uninstalled." -foregroundcolor Cyan
+			} else {
+				Write-Host "[-] Failed to uninstall the Windows Event Log manifest." -foregroundcolor Red
+			}
+		}
+    } else {
+      Write-Host "'$kServiceName' is not an installed system service." -foregroundcolor Yellow
+    }
+	
+	# stop and remove EIQ agent services
+	StopPlgxServices
+	
+	#clean up all files and directories
+	CleanupInstalledFiles
+}
 
 function Main {
     Write-Host -ForegroundColor YELLOW  "============ EclecticIQ Helper Script to install osquery with extension. ============"
@@ -238,6 +367,8 @@ function Main {
 
 	if ($help) {
 		Do-Help
+	} elseif ($uninstall) {
+		UninstallAgent		
 	} else {
 		if ($windows_event_log.ToBool() -Eq 1) {
 			Write-Host -ForegroundColor Yellow "[+] Proceeding with windows_event_log as logger plugin."
@@ -260,6 +391,8 @@ function Main {
 
 		StartOsqueryService
 		
+		CleanupDownloadedFiles
+		
 		Write-Host -ForegroundColor Yellow "========================================================================"
 	}
 }
@@ -267,4 +400,4 @@ function Main {
 $startTime = Get-Date
 $null = Main
 $endTime = Get-Date
-Write-Host "[+] Extension Update took $(($endTime - $startTime).TotalSeconds) seconds."
+Write-Host "[+] Operation took $(($endTime - $startTime).TotalSeconds) seconds."
