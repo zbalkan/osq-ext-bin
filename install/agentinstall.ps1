@@ -7,25 +7,26 @@ param(
 
 
 # Globals
-$extnDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/plgx_win_extension.ext.exe'
-$osquerydDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osqueryd.exe'
-$osqueryConfDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery.conf'
-$osqueryEvtloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery_evtlogger.flags'
-$osqueryFsloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery_fslogger.flags'
-$osqueryManifestDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/osquery.man'
-$extnLoadDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/extensions.load'
+$scriptVersion = '1.0.0.0'
+$extnDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/plgx_win_extension.ext.exe'
+$osquerydDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osqueryd.exe'
+$osqueryConfDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery.conf'
+$osqueryEvtloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery_evtlogger.flags'
+$osqueryFsloggerFlagsDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery_fslogger.flags'
+$osqueryManifestDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery.man'
+$extnLoadDownloadUrl = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/extensions.load'
 
 # Globals for packs files
-$osqueryPack1Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/hardware-monitoring.conf'
-$osqueryPack2Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/incident-response.conf'
-$osqueryPack3Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/it-compliance.conf'
-$osqueryPack4Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/osquery-monitoring.conf'
-$osqueryPack5Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/ossec-rootkit.conf'
-$osqueryPack6Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/osx-attacks.conf'
-$osqueryPack7Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/unwanted-chrome-extensions.conf'
-$osqueryPack8Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/vuln-management.conf'
-$osqueryPack9Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/windows-attacks.conf'
-$osqueryPack10Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/install_script/install/packs/windows-hardening.conf'
+$osqueryPack1Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/hardware-monitoring.conf'
+$osqueryPack2Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/incident-response.conf'
+$osqueryPack3Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/it-compliance.conf'
+$osqueryPack4Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/osquery-monitoring.conf'
+$osqueryPack5Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/ossec-rootkit.conf'
+$osqueryPack6Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/osx-attacks.conf'
+$osqueryPack7Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/unwanted-chrome-extensions.conf'
+$osqueryPack8Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/vuln-management.conf'
+$osqueryPack9Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/windows-attacks.conf'
+$osqueryPack10Url = 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/packs/windows-hardening.conf'
 
 
 $ExtnFilename = 'plgx_win_extension.ext.exe'
@@ -212,7 +213,6 @@ function CopyFilesToInstalldir {
 
 function Do-Help {
 	$programName = (Get-Item $PSCommandPath ).Name
-  
 	Write-Host "Usage: $programName (-windows_event_log|-filesystem|-help|-uninstall)" -foregroundcolor Yellow
 	Write-Host ""
 	Write-Host "  Only one of the following options can be used. Using multiple will result in options being ignored."
@@ -357,7 +357,7 @@ function UninstallAgent {
 }
 
 function Main {
-    Write-Host -ForegroundColor YELLOW  "============ EclecticIQ Helper Script to install osquery with extension. ============"
+    Write-Host -ForegroundColor YELLOW  "============ EclecticIQ Helper Script (v$scriptVersion) to install osquery with extension. ============"
 
     Write-Host "[+] Verifying script is running with Admin privileges" -foregroundcolor Yellow
     if (-not (Test-IsAdmin)) {
