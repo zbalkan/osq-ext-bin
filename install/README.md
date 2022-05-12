@@ -47,6 +47,7 @@ It is 3.5.1.0. It is digitally signed by EclecticIQ.
 It installs osquery version 5.2.2.
 
 3.  I have installed osquery using the MSI from osquery website. Now what?
+
 Osquery should not be pre-installed. If osquery is already installed, the script will skip the installation.
 
 4. I want to report an issue.
