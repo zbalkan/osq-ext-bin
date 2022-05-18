@@ -1,13 +1,26 @@
-﻿# EclecticIQ osquery Extension install script with logger
+﻿# EclecticIQ osquery extension
 
-EclecticIQ OSQuery Extension install script installs osquery and EclecticIQ Windows OSQuery Extension (plgx_win_extension.ext.exe) on Windows x64
-adding real time event collection capabilities to osquery.
+The management of an osquery tool typically requires a centralized agent management solution, such as Eclectic Endpoint Response Community Edition,
+FleetDm, SGT or osctrl. A centralized management solution enables configuration and log management for a fleet of osquery agents and provides additional functionality. 
+However, if you need to deploy a standalone osquery with an extension, such as EclecticIQ osquery extension on one or more endpoint devices with 
+predefined configurations that are unlikely to change during the lifetime, then EclecticIQ provides a solution. 
 
-## How to use
+You can install the EclecticIQ osquery Extension extension to add real-time event collection capabilities to osquery. 
+You can deploy prebuilt config files (osquery agent) along with the EclecticIQ real-time event extension by using a simple PowerShell script. 
+The deployment can be automated through other enterprise solutions, such as GPO or SCCM. During deployment, you can define if the query results are directed
+to the Windows Event Log or a file on the filesystem. If the results are directed to a file, any existing can pick the data to forward to a centralized location (SIEM). 
+Organizations in need of better visibility of activities on their endpoint devices can use such an approach, without getting into the complexities of deploying
+an osquery management solution. The automated one-time deployment can also be a useful scenario for sandboxes where malwares are detonated and 
+towards the end of which the activity done by the malware can be captured via the log files.
 
-Download the script [agentinstall.ps1](https://github.com/eclecticiq/osq-ext-bin/raw/master/install/agentinstall.ps1)
+#Install
 
-To download the file, you can run the following powershell script:
+EclecticIQ provides a script to install osquery and EclecticIQ Windows osquery extension (plgx_win_extension.ext.exe) on any Windows x64 system. 
+Follow these steps to install and use the EclecticIQ osquery extension:
+-Ensure you do not have osquery installed. 
+-If osquery is already installed, the script will skip the installation. 
+
+Run the following PowerShell script to download the install script [agentinstall.ps1](https://github.com/eclecticiq/osq-ext-bin/raw/master/install/agentinstall.ps1):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12
 $webclient = New-Object System.Net.WebClient
@@ -15,48 +28,52 @@ $webclient.DownloadFile("https://github.com/eclecticiq/osq-ext-bin/raw/master/in
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ![Script_download](Images/script_download.png)
 
-To view script help, run agentinstall.ps1 with -help option.   
+Optionally, to view help, run the agentinstall.ps1 script with -help option.   
 ![Script_help](Images/script_help.PNG)
 
-There are 2 osquery logger plugin options available for configuration in the script: windows_event_log and filesystem. 
-Refer [here](https://osquery.readthedocs.io/en/stable/deployment/logging/) for osquery logger plugins feature.
+To configure the script, two osquery logger plugin options are available.
 
-If no option is provided or -filesystem option is provided while running the script, The script installs osquery (v5.2.2.0) and extension with filesystem logger plugin.
+##windows_event_log
+
+When you use this option, osquery and extension are installed with windows_event_log logger plugin.
+![evtlog_logger_selected](Images/evtlog_logger_selected.PNG)
+
+This will generate osquery logs in the Windows event viewer (Applications and Services Logs -> EclecticIQ -> osquery).
+![evtlog_logger_view](Images/evtlog_logger_view.png)
+
+##filesystem 
+
+If you provide no option or use the -filesystem option, the script installs osquery and extension with filesystem logger plugin
 ![fs_logger_selected](Images/fs_logger_selected.PNG)
 
 This will generate osquery logs in c:\program files\osquery\log folder.
 ![fs_logger_view](Images/fs_logger_view.png)
 
-If -windows_event_log option is provided, osquery and extension will be installed with windows_event_log logger plugin.
-![evtlog_logger_selected](Images/evtlog_logger_selected.PNG)
+For more information on the osquery logger plugins feature, review this [information](https://osquery.readthedocs.io/en/stable/deployment/logging/)
 
-This will generate osquery logs in Windows event viewer (Applications and Services Logs -> EclecticIQ -> osquery).
-![evtlog_logger_view](Images/evtlog_logger_view.png)
+#Uninstall 
 
 To uninstall the osquery and extension, use -uninstall option.
 ![uninstall](Images/uninstall.PNG)
 
-# FAQ
+#FAQ
 
 1.  What is extension version installed with the script?
 
-It is 3.5.1.0. It is digitally signed by EclecticIQ.
+The script installs EclecticIQ extension version 3.5.1.0 which is digitally signed by EclecticIQ.
 
 2.  What osquery version does it install?
 
-It installs osquery version 5.2.2.
+The script installs osquery version 5.2.2.
 
-3.  I have installed osquery using the MSI from osquery website. Now what?
+3. I want to customize osquery config in osquery.conf file to be used with the install script. What do I do?
 
-Osquery should not be pre-installed. If osquery is already installed, the script will skip the installation.
-
-4. I want to customize osquery config in osquery.conf file to be used with the install script. What do I do?
 - Fork the repository and clone it
 - Update osquery.conf file as per your requirements and push the changes to your fork
 - Update the url of osquery.conf (pointing to your fork) in agentinstall.ps1 (line 13) against $osqueryConfDownloadUrl variable. Default value is: 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery.conf' 
 - Next time you run agentinstall.ps1, it will pull the osquery.conf from your fork with custom osquery config
 
-5. I want to report an issue.
+#Contact us
 
-You can log it here, mail to support\@eclecticiq.com or find us on [osquery
+For issues and questions, you can contact support\@eclecticiq.com or reach us on [osquery
 slack](https://osquery.slack.com/) at channel \# eclecticiq-polylogyx-extension
