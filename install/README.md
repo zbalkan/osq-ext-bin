@@ -50,7 +50,13 @@ It installs osquery version 5.2.2.
 
 Osquery should not be pre-installed. If osquery is already installed, the script will skip the installation.
 
-4. I want to report an issue.
+4. I want to customize osquery config in osquery.conf file to be used with the install script. What do I do?
+- Fork the repository and clone it
+- Update osquery.conf file as per your requirements and push the changes to your fork
+- Update the url of osquery.conf (pointing to your fork) in agentinstall.ps1 (line 13) against $osqueryConfDownloadUrl variable. Default value is: 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery.conf' 
+- Next time you run agentinstall.ps1, it will pull the osquery.conf from your fork with custom osquery config
+
+5. I want to report an issue.
 
 You can log it here, mail to support\@eclecticiq.com or find us on [osquery
 slack](https://osquery.slack.com/) at channel \# eclecticiq-polylogyx-extension
