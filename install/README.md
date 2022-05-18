@@ -1,6 +1,6 @@
 ﻿# EclecticIQ osquery extension
 
-The management of an osquery tool typically requires a centralized agent management solution, such as [Eclectic Endpoint Response Community Edition](https://github.com/eclecticiq/eiq-er-ce),
+The management of an osquery tool typically requires a centralized agent management solution, such as [EclecticIQ Endpoint Response Community Edition](https://github.com/eclecticiq/eiq-er-ce),
 [FleetDm](https://github.com/fleetdm/fleet), [SGT](https://github.com/OktaSecurityLabs/sgt) or [osctrl](https://osctrl.net/). A centralized management solution enables configuration and log management for a fleet of osquery agents and provides additional functionality. 
 However, if you need to deploy a standalone osquery with an extension, such as EclecticIQ osquery extension on one or more endpoint devices with 
 predefined configurations that are unlikely to change during the lifetime, then EclecticIQ provides a solution. 
