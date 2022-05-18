@@ -13,7 +13,7 @@ Organizations in need of better visibility of activities on their endpoint devic
 an osquery management solution. The automated one-time deployment can also be a useful scenario for sandboxes where malwares are detonated and 
 towards the end of which the activity done by the malware can be captured via the log files.
 
-#Install
+# Install
 
 EclecticIQ provides a script to install osquery and EclecticIQ Windows osquery extension (plgx_win_extension.ext.exe) on any Windows x64 system. 
 Follow these steps to install and use the EclecticIQ osquery extension:
@@ -33,7 +33,7 @@ Optionally, to view help, run the agentinstall.ps1 script with -help option.
 
 To configure the script, two osquery logger plugin options are available.
 
-##windows_event_log
+## windows_event_log
 
 When you use this option, osquery and extension are installed with windows_event_log logger plugin.
 ![evtlog_logger_selected](Images/evtlog_logger_selected.PNG)
@@ -41,7 +41,7 @@ When you use this option, osquery and extension are installed with windows_event
 This will generate osquery logs in the Windows event viewer (Applications and Services Logs -> EclecticIQ -> osquery).
 ![evtlog_logger_view](Images/evtlog_logger_view.png)
 
-##filesystem 
+## filesystem 
 
 If you provide no option or use the -filesystem option, the script installs osquery and extension with filesystem logger plugin
 ![fs_logger_selected](Images/fs_logger_selected.PNG)
@@ -51,12 +51,12 @@ This will generate osquery logs in c:\program files\osquery\log folder.
 
 For more information on the osquery logger plugins feature, review this [information](https://osquery.readthedocs.io/en/stable/deployment/logging/)
 
-#Uninstall 
+# Uninstall 
 
 To uninstall the osquery and extension, use -uninstall option.
 ![uninstall](Images/uninstall.PNG)
 
-#FAQ
+# FAQ
 
 1.  What is extension version installed with the script?
 
@@ -73,7 +73,7 @@ The script installs osquery version 5.2.2.
 - Update the url of osquery.conf (pointing to your fork) in agentinstall.ps1 (line 13) against $osqueryConfDownloadUrl variable. Default value is: 'https://github.com/eclecticiq/osq-ext-bin/raw/master/install/osquery.conf' 
 - Next time you run agentinstall.ps1, it will pull the osquery.conf from your fork with custom osquery config
 
-#Contact us
+# Contact us
 
 For issues and questions, you can contact support\@eclecticiq.com or reach us on [osquery
 slack](https://osquery.slack.com/) at channel \# eclecticiq-polylogyx-extension
