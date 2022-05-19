@@ -17,10 +17,8 @@ towards the end of which the activity done by the malware can be captured via th
 
 EclecticIQ provides a script to install osquery and EclecticIQ Windows osquery extension (plgx_win_extension.ext.exe) on any Windows x64 system. 
 Follow these steps to install and use the EclecticIQ osquery extension:
--Ensure you do not have osquery installed. 
--If osquery is already installed, the script will skip the installation. 
-
-Run the following PowerShell script to download the install script [agentinstall.ps1](https://github.com/eclecticiq/osq-ext-bin/raw/master/install/agentinstall.ps1):
+1. Ensure you do not have osquery installed. If osquery is already installed, the script will skip the installation. 
+2. Run the following PowerShell script to download the install script [agentinstall.ps1](https://github.com/eclecticiq/osq-ext-bin/raw/master/install/agentinstall.ps1):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12
 $webclient = New-Object System.Net.WebClient
@@ -28,10 +26,10 @@ $webclient.DownloadFile("https://github.com/eclecticiq/osq-ext-bin/raw/master/in
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ![Script_download](Images/script_download.png)
 
-Optionally, to view help, run the agentinstall.ps1 script with -help option.   
+3. Optionally, to view help, run the agentinstall.ps1 script with -help option.   
 ![Script_help](Images/script_help.PNG)
 
-To configure the script, two osquery logger plugin options are available.
+4. To configure the script, two osquery logger plugin options are available.
 
 ## windows_event_log
 
