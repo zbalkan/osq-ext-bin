@@ -19,7 +19,7 @@ EclecticIQ provides a script to install osquery and EclecticIQ Windows osquery e
 Follow these steps to install and use the EclecticIQ osquery extension:
 
 1. Ensure you do not have osquery installed. If osquery is already installed, the script will skip the installation. 
-2. Run the following PowerShell script to download the install script [agentinstall.ps1](https://github.com/eclecticiq/osq-ext- bin/raw/master/install/agentinstall.ps1).
+2. Run the following PowerShell script to download the install script [agentinstall.ps1](https://github.com/eclecticiq/osq-ext-bin/raw/master/install/agentinstall.ps1).
 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::TLS12
