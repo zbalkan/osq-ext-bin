@@ -1,6 +1,10 @@
 ﻿# EclecticIQ osquery Extension for Windows
 
-EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.5.1.1 (md5: b43c15e765e42658633c4023ed1812d4)
+EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform
+extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. 
+The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel
+for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. 
+The version of the current release is 3.5.1.1 (md5: 1980eb82d2d44078fda728aac196705e)
 
 ## What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
