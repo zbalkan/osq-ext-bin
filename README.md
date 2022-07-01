@@ -1,6 +1,10 @@
 ﻿# EclecticIQ osquery Extension for Windows
 
-EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. The version of the current release is 3.5.1.0 (md5: c2f77264ec13fc90b1acfc5c05218707)
+EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform
+extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. 
+The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel
+for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. 
+The version of the current release is 3.5.1.1 (md5: 1980eb82d2d44078fda728aac196705e)
 
 ## What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -896,7 +900,7 @@ osquery>select * from win_process_events where path like '%foo%';
 
 1.  What is extension version?
 
-It is 3.5.1.0. It is digitally signed by EclecticIQ.
+It is 3.5.1.1. It is digitally signed by EclecticIQ.
 
 2.  What osquery version to use?
 
@@ -987,3 +991,19 @@ Start the filter string with * followed by single slash (\\). For example, to mo
 
 Similarly, to monitor "path" on network for "win_process_events", use:
 "*\10.10.10.10\Users\foo\foo.exe" as filter string.
+
+18. I need to change my EclecticIQ OSQuery Extension real-time events channel log file size. How can I do that?
+
+By default, event channel log file is configured with a size of 40MB which can accomodate roughly 40k-50k events before log rotation.
+To adjust log file size, run the following command on cmd:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cmd>wevtutil sl "PlgxRealTimeEvents/Log" /ms:<size_in_bytes>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+where <size_in_bytes> can be 5242880 for 5MB, or 2097152 for 2MB and so on.
+
+You may need to clear the logs before reducing log file size. To clear the logs, run the following command on cmd:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cmd>wevtutil cl "PlgxRealTimeEvents/Log"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
