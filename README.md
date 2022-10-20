@@ -114,8 +114,8 @@ Perform these steps to configure event monitoring for a specific pipe.
 1. Open osquery.conf file.
 2. Navigate to the plgx_event_filters > win_file_events > target_path > include > values section.
 3. Specify the pipe details.
-	Add "\\unknown drive\\<pipe name>" to monitor a specific named pipe
-	Add "\\unknown drive\\*" to monitor all named pipes
+	Add "\\\\unknown drive\\\\\<pipe name\>" to monitor a specific named pipe
+	Add "\\\\unknown drive\\\\*" to monitor all named pipes
 
 The sample output of the win_named_pipe_events table would look something like:
 
