@@ -7,5 +7,6 @@ TableColumns columns() const
             std::make_tuple("utc_time", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
        };
 }

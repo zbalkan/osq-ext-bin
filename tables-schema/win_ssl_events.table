@@ -8,8 +8,8 @@ return{
             std::make_tuple("issuer_name", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("serial_number", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("dns_names", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
-	    std::make_tuple("ja3_md5", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
-	    std::make_tuple("ja3s_md5", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+			std::make_tuple("ja3_md5", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+			std::make_tuple("ja3s_md5", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("pid", BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("process_guid", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("process_name", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
@@ -17,4 +17,5 @@ return{
             std::make_tuple("remote_port", INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("time", BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("utc_time", TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
 }

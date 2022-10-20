@@ -10,5 +10,6 @@ TableColumns columns() const override
             std::make_tuple("matches", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("count", INTEGER_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
         };
 }

@@ -5,6 +5,7 @@ TableColumns columns() const
             std::make_tuple("eid", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("pid", BIGINT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("process_guid", TEXT_TYPE, ColumnOptions::DEFAULT),
+            std::make_tuple("process_name", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("image_path", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("md5", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("uid", TEXT_TYPE, ColumnOptions::DEFAULT),
@@ -24,6 +25,7 @@ TableColumns columns() const
             std::make_tuple("signature_algo", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("subject_dn", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("issuer_dn", TEXT_TYPE, ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
         };
 }
 

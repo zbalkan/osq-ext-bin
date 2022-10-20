@@ -1,0 +1,10 @@
+TableColumns columns() const
+{
+       return{
+				std::make_tuple("filename", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+				std::make_tuple("path", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+				std::make_tuple("flags", osquery::UNSIGNED_BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
+				std::make_tuple("attribs", osquery::UNSIGNED_BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
+       };
+}
+
