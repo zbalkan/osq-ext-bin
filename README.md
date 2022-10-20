@@ -74,7 +74,7 @@ This additional state of the Windows endpoint is exported by means of following 
 
 The detailed schema for these [tables](https://github.com/eclecticiq/osq-ext-bin/tree/master/tables-schema). is available 
 
-# Search for files on endpoints via Disk index (v4.0.0.0 onwards)
+# Search for files on endpoints by using disk indexing (v4.0.0.0 onwards)
 
 You can search for specific files on endpoints. This feature is available on all supported Windows operating systems.
 Before you can search for a file on endpoints, you must enable search capabilities by setting the custom_plgx_DiskIndexingEnabled 
@@ -107,18 +107,18 @@ osquery> select * from win_disk_index where filename like '%calc.exe%';
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-# Named pipe event (v4.0.0.0 onwards)
+# Named pipe events (v4.0.0.0 onwards)
 
 EclecticIQ Endpoint Response provides visibility for named pipe events.
 By default, this feature is disabled. To enable the feature, you must specify the pipe name to monitor in the config.
 Perform these steps to configure event monitoring for a specific pipe.
-1. Open osquery.conf file.
+1. Open the osquery.conf file.
 2. Navigate to the plgx_event_filters > win_file_events > target_path > include > values section.
 3. Specify the pipe details.
 	Add "\\\\unknown drive\\\\\<pipe name\>" to monitor a specific named pipe
 	Add "\\\\unknown drive\\\\*" to monitor all named pipes
 
-The sample output of the win_named_pipe_events table would look something like:
+Here is the sample output of the win_named_pipe_events table.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery> select * from win_named_pipe_events;
