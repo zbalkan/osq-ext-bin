@@ -80,10 +80,14 @@ You can search for specific files on endpoints. This feature is available on all
 Before you can search for a file on endpoints, you must enable search capabilities by setting the custom_plgx_DiskIndexingEnabled 
 option to true in the config. By default, this option is set to false.
 
+Setting custom_plgx_DiskIndexingReindexTimeout (default: 86400) is a configuration to control if and when reindexing is done. 
+Its value 0 implies reindexing will be done only once and never again.
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "options" :
 {
-   "custom_plgx_DiskIndexingEnabled": "true"   
+   "custom_plgx_DiskIndexingEnabled": "true",
+   "custom_plgx_DiskIndexingReindexTimeout": "200"
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
