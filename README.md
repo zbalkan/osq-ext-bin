@@ -975,7 +975,7 @@ osquery>select * from win_process_events where path like '%foo%';
 
 1.  What is extension version?
 
-It is 3.5.1.1. It is digitally signed by EclecticIQ.
+It is 4.0.0.0. It is digitally signed by EclecticIQ.
 
 2.  What osquery version to use?
 
