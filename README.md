@@ -1,4 +1,4 @@
-﻿# EclecticIQ osquery Extension for Windows
+# EclecticIQ osquery Extension for Windows
 
 EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform
 extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. 
@@ -76,13 +76,21 @@ The detailed schema for these [tables](https://github.com/eclecticiq/osq-ext-bin
 
 # Search for files on endpoints by using disk indexing (v4.0.0.0 onwards)
 
-You can search for specific files on endpoints. This feature is available on all supported Windows operating systems.
-Before you can search for a file on endpoints, you must enable search capabilities by setting the custom_plgx_DiskIndexingEnabled 
-option to true in the config. By default, this option is set to false.
+This version of extension integrates two important search capabilities i.e one as provided by OSquery through its SQL and 
+another by indexing the disk and enabling searching for files in the background. Osquery already has powerful [file](https://www.kolide.com/blog/the-file-table-osquery-s-secret-weapon) table
+to query a file's properties on the disk. However the file table requires one to know the location of the file before hand 
+and the WHERE clause is mandatory. The wildcards in the SQL syntax do help searching the file in a set of known directories 
+but the file table is not suitable to search the file if the search surface is the entire hard disk. The only way to efficiently achieve
+that is by indexing the disk in the background. The current version of the extension is built with the ability to index the disk 
+in the background which can make searching for a file in the entire hard disk much more efficient and simplified. The search engine 
+uses the similar SQL syntax and therefore also supports all kinds of other SQL commands like JOINS with other tables (e.g. hash)
 
-Setting custom_plgx_DiskIndexingReindexTimeout (default: 0) is a configuration to control if and when reindexing is done. 
-Its value 0 implies reindexing will be done only once and never again. Also, minimum custom acceptable value is 300. 
-Value 300 means reindexing would be done only at least after 300 seconds. Recommended value is 86400.
+This feature is available on all supported Windows operating systems. Before you can search for a file on endpoints, you must 
+enable search capabilities by setting the **custom_plgx_DiskIndexingEnabled** option to true in the config. By default, this option is set to false.
+
+To keep the disk index refreshed, another configuration flag **custom_plgx_DiskIndexingReindexTimeout** is provided which controls if, and when,
+re-indexing needs to done. Its value 0 (default) implies indexing will be done only once and never again. Also, minimum custom acceptable value is 300. 
+Value 300 means re-indexing would be done only at least after 300 seconds. Recommended value is 86400.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "options" :
@@ -92,7 +100,7 @@ Value 300 means reindexing would be done only at least after 300 seconds. Recomm
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To perform the actual search for the file, here is an example of a live query you can run.
+To perform the actual search for the file using the Osquery's SQL syntax, here is an example of a live query you can run.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 osquery> select * from win_disk_index where filename like '%calc.exe%';
