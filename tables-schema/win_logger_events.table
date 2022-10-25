@@ -3,7 +3,8 @@ TableColumns columns() const
       return{
             std::make_tuple("logger_name", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("logger_watch_file", TEXT_TYPE, ColumnOptions::DEFAULT),
-            std::make_tuple("log_entry", TEXT_TYPE, ColumnOptions::DEFAULT)
+            std::make_tuple("log_entry", TEXT_TYPE, ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
        };
 }
 

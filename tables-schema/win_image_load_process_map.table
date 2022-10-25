@@ -3,6 +3,7 @@ TableColumns columns() const
  return{
             std::make_tuple("pid", osquery::BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("process_guid", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+            std::make_tuple("process_name", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("image_size", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("image_path", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("md5", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
@@ -10,6 +11,7 @@ TableColumns columns() const
             std::make_tuple("image_base", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("time", osquery::BIGINT_TYPE, osquery::ColumnOptions::DEFAULT),
             std::make_tuple("utc_time", osquery::TEXT_TYPE, osquery::ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
         };
 
 }

@@ -16,6 +16,7 @@ TableColumns columns() const
             std::make_tuple("remote_address", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("local_port", INTEGER_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("remote_port", INTEGER_TYPE, ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
         };
 }
 

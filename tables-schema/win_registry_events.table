@@ -13,6 +13,7 @@ TableColumns columns() const
             std::make_tuple("owner_uid", TEXT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("time", BIGINT_TYPE, ColumnOptions::DEFAULT),
             std::make_tuple("utc_time", TEXT_TYPE, ColumnOptions::DEFAULT),
+			std::make_tuple("eventid", osquery::INTEGER_TYPE, osquery::ColumnOptions::DEFAULT),
         };
 }
 

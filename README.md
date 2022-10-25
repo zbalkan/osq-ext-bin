@@ -1,10 +1,10 @@
-﻿# EclecticIQ osquery Extension for Windows
+# EclecticIQ osquery Extension for Windows
 
 EclecticIQ OSQuery Extension, also known as PolyLogyx Windows OSQuery Extension (plgx_win_extension.ext.exe) and earlier hosted at [PolyLogyx github](https://github.com/polylogyx/osq-ext-bin/) for Windows platform
 extends the core [osquery](https://osquery.io/) on Windows by adding real time event collection capabilities to osquery on Windows platform. The capabilities are built using the kernel services library of EclecticIQ. 
 The current release of the extension is a 'community-only' release It is a step in the direction aimed at increasing osquery footprint and adoption on Windows platform. With the extension acting as a proxy into Windows kernel
 for osquery, the possibilities can be enormous. The extension supports the 64 bit OS versions from Win7 SP1 onwards, however for Win7, make sure the [KB](https://www.microsoft.com/en-us/download/details.aspx?id=46148) is installed. 
-The version of the current release is 3.5.1.1 (md5: 1980eb82d2d44078fda728aac196705e)
+The version of the current release is 4.0.0.0 (md5: 96e54d304022fb7ea9e62d9096836104)
 
 ## What it does:
 The extension bridges the feature gap of osquery on Windows in comparison to MacOS and Linux by adding the following into the osquery:
@@ -35,6 +35,11 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 24) AMSI scan for malware in files
 25) Blocking for file operations, registry operations, and process creation/termination
 26) **New in 3.5.1.0**: Distinguished events for file delete operation when Delete disposition is set to True 
+27) **New in 4.0.0.0**: New table "win_disk_index" with search capabilities.
+28) **New in 4.0.0.0**: New table "win_named_pipe_events" with NAMED_PIPE_CREATE and NAMED_PIPE_DISCONNECT events.
+29) **New in 4.0.0.0**: New column "process_name" in win_image_load_events and win_image_load_process_map tables which denotes the first process detected by extension on loading a particular image.
+30) **New in 4.0.0.0**: New (hidden) column "sha256" in win_process_events table denoting sha256 hash of the process.  
+
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the EclecticIQ Extension
 
@@ -68,6 +73,76 @@ This additional state of the Windows endpoint is exported by means of following 
 - win_yara
 
 The detailed schema for these [tables](https://github.com/eclecticiq/osq-ext-bin/tree/master/tables-schema). is available 
+
+# Search for files on endpoints by using disk indexing (v4.0.0.0 onwards)
+
+This version of extension integrates two important search capabilities i.e one as provided by OSquery through its SQL and 
+another by indexing the disk and enabling searching for files in the background. Osquery already has powerful [file](https://www.kolide.com/blog/the-file-table-osquery-s-secret-weapon) table
+to query a file's properties on the disk. However the file table requires one to know the location of the file before hand 
+and the WHERE clause is mandatory. The wildcards in the SQL syntax do help searching the file in a set of known directories 
+but the file table is not suitable to search the file if the search surface is the entire hard disk. The only way to efficiently achieve
+that is by indexing the disk in the background. The current version of the extension is built with the ability to index the disk 
+in the background which can make searching for a file in the entire hard disk much more efficient and simplified. The search engine 
+uses the similar SQL syntax and therefore also supports all kinds of other SQL commands like JOINS with other tables (e.g. hash)
+
+This feature is available on all supported Windows operating systems. Before you can search for a file on endpoints, you must 
+enable search capabilities by setting the **custom_plgx_DiskIndexingEnabled** option to true in the config. By default, this option is set to false.
+
+To keep the disk index refreshed, another configuration flag **custom_plgx_DiskIndexingReindexTimeout** is provided which controls if, and when,
+re-indexing needs to done. Its value 0 (default) implies indexing will be done only once and never again. Also, minimum custom acceptable value is 300. 
+Value 300 means re-indexing would be done only at least after 300 seconds. Recommended value is 86400.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"options" :
+{
+   "custom_plgx_DiskIndexingEnabled": "true",
+   "custom_plgx_DiskIndexingReindexTimeout": "300"
+},
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To perform the actual search for the file using the Osquery's SQL syntax, here is an example of a live query you can run.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_disk_index where filename like '%calc.exe%';
++-------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------+---------+
+| filename                                                                                                    | path                                                                                                                                                                                           | flags | attribs |
++-------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------+---------+
+| calc.exe                                                                                                    | C:\Windows\System32\calc.exe                                                                                                                                                                   | 1     | 262176  |
+| C:\Windows\WinSxS\amd64_microsoft-windows-calc_31bf3856ad364e35_10.0.19041.1_none_5faf0ebeba197e78\calc.exe | C:\Windows\System32\calc.exe                                                                                                                                                                   | 1     | 262176  |
+| calc.exe                                                                                                    | C:\Windows\WinSxS\wow64_microsoft-windows-calc_31bf3856ad364e35_10.0.19041.1_none_6a03b910ee7a4073\calc.exe                                                                                    | 1     | 262176  |
+| C:\Windows\SysWOW64\calc.exe                                                                                | C:\Windows\WinSxS\wow64_microsoft-windows-calc_31bf3856ad364e35_10.0.19041.1_none_6a03b910ee7a4073\calc.exe                                                                                    | 1     | 262176  |
+| calc.exe                                                                                                    | C:\test\calc.exe                                                                                                                                                                               | 1     | 262176  |
+| win32calc.exe                                                                                               | C:\Windows\servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.2130.1.9\wow64_microsoft-windows-win32calc_31bf3856ad364e35_10.0.19041.1741_none_c891fec201725574\r\win32calc.exe | 1     | 0       |
+| win32calc.exe                                                                                               | C:\Windows\servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.2130.1.9\wow64_microsoft-windows-win32calc_31bf3856ad364e35_10.0.19041.1741_none_c891fec201725574\f\win32calc.exe | 1     | 0       |
+| win32calc.exe                                                                                               | C:\Windows\servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.2130.1.9\amd64_microsoft-windows-win32calc_31bf3856ad364e35_10.0.19041.1865_none_be3429f7cd18489c\r\win32calc.exe | 1     | 0       |
+| win32calc.exe                                                                                               | C:\Windows\servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.2130.1.9\amd64_microsoft-windows-win32calc_31bf3856ad364e35_10.0.19041.1865_none_be3429f7cd18489c\f\win32calc.exe | 1     | 0       |
++-------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------+---------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# Named pipe events (v4.0.0.0 onwards)
+
+EclecticIQ Endpoint Response provides visibility for named pipe events.
+By default, this feature is disabled. To enable the feature, you must specify the pipe name to monitor in the config.
+Perform these steps to configure event monitoring for a specific pipe.
+1. Open the osquery.conf file.
+2. Navigate to the plgx_event_filters > win_file_events > target_path > include > values section.
+3. Specify the pipe details.
+	Add "\\\\unknown drive\\\\\<pipe name\>" to monitor a specific named pipe
+	Add "\\\\unknown drive\\\\*" to monitor all named pipes
+
+Here is the sample output of the win_named_pipe_events table.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osquery> select * from win_named_pipe_events;
++-----------------------+--------------------------------------+-------------------------+------------------------+------------+--------------------------+-------+--------------------------------------+------------------------------------------------+---------+
+| action                | eid                                  | target_path             | uid                    | time       | utc_time                 | pid   | process_guid                         | process_name                                   | eventid |
++-----------------------+--------------------------------------+-------------------------+------------------------+------------+--------------------------+-------+--------------------------------------+------------------------------------------------+---------+
+| NAMED_PIPE_DISCONNECT | 015E04C8-4D1C-4992-89A1-4A2D00000000 | \UNKNOWN DRIVE\testpipe | Unknown                | 1662473336 | Tue Sep  6 14:08:56 2022 | 9220  | EB128E9D-2DA7-11ED-81A7-F6A576ACB707 | C:\test\server.exe                             | 19      |
+| NAMED_PIPE_CREATE     | 7B46FE0C-82AB-413B-9503-247600000000 | \UNKNOWN DRIVE\testpipe | BUILTIN\Administrators | 1662473333 | Tue Sep  6 14:08:53 2022 | 9220  | EB128E9D-2DA7-11ED-81A7-F6A576ACB707 | C:\test\server.exe                             | 19      |
++-----------------------+--------------------------------------+-------------------------+------------------------+------------+--------------------------+-------+--------------------------------------+------------------------------------------------+---------+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 # File delete by disposition event (v3.5.1.0 onwards)
 
