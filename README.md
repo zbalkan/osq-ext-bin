@@ -39,7 +39,7 @@ The extension bridges the feature gap of osquery on Windows in comparison to Mac
 28) **New in 4.0.0.0**: New table "win_named_pipe_events" with NAMED_PIPE_CREATE and NAMED_PIPE_DISCONNECT events.
 29) **New in 4.0.0.0**: New column "process_name" in win_image_load_events and win_image_load_process_map tables which denotes the first process detected by extension on loading a particular image.
 30) **New in 4.0.0.0**: New (hidden) column "sha256" in win_process_events table denoting sha256 hash of the process.  
-
+31) **New in 4.0.0.0**: Extension would start generating events only after event filters are applied in configuration. Previously, extension would generate events as soon as its kernel component (driver) loaded.
 
 This additional state of the Windows endpoint is exported by means of following additional tables created by the EclecticIQ Extension
 
