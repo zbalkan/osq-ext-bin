@@ -62,7 +62,7 @@ To uninstall the osquery and extension, use -uninstall option.
 
 1.  What is extension version installed with the script?
 
-    The script installs EclecticIQ extension version 3.5.1.0 which is digitally signed by EclecticIQ.
+    The script installs EclecticIQ extension version published in master branch which is digitally signed by EclecticIQ.
 
 2.  What osquery version does it install?
 
