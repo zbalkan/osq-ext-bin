@@ -500,7 +500,7 @@ A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the o
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Note: win_ssl_events uses ssl decode library [ssldump](https://github.com/adulau/ssldump)
+Note: win_ssl_events use ssl functionality [ssldump](https://github.com/adulau/ssldump/tree/master/ssl) developed by Eric Rescorla for RTFM, Inc.
 
 # Windows Event Log tables
 
