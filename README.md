@@ -500,6 +500,8 @@ A custom flag called **custom_plgx_EnableSSL** needs to be set to true via the o
 },
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Note: win_ssl_events uses ssl decode library [ssldump](https://github.com/adulau/ssldump)
+
 # Windows Event Log tables
 
 The based osquery tool provided an event driven approach to collect data from Windows Event Log. This requires that the channels from which the events need to be collected have to be provided at the time of provisioning the agent and the tool will restrict the collection of log data to those channels. For purposes of incident response however, the ability to collect any log from any channel (including retrospective logs) is of paramount importance. We have extended osquery's SQL interface in our extension to facilitate this capability making the collection, aggregation and parsing of Windows Event Log data simplified.
