@@ -1,3 +1,6 @@
+#Requires -PSEdition Desktop
+#Requires -RunAsAdministrator
+
 param(
   [switch] $help = $false,
   [switch] $windows_event_log = $false,
